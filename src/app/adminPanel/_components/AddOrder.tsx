@@ -18,7 +18,6 @@ export default function AddOrder({ userId }: { userId: string }) {
         userId,
       },
     });
-    // Revalidate the path to update the UI
     revalidatePath(`/adminPanel/${userId}`);
   }
   return (

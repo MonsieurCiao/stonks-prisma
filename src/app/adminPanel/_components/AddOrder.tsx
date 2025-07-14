@@ -1,10 +1,10 @@
 import { revalidatePath } from "next/cache";
 import React from "react";
+import { prisma } from "../../../../lib/prisma";
 
 export default function AddOrder({ userId }: { userId: string }) {
   async function addOrder(formData: FormData) {
     "use server";
-    const { prisma } = require("../../../../lib/prisma");
     const stockSymbol = formData.get("stockSymbol") as "GLSCH";
     const quantity = parseInt(formData.get("quantity") as string, 10);
     const price = parseFloat(formData.get("price") as string);

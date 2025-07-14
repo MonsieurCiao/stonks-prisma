@@ -1,8 +1,8 @@
 import { revalidatePath } from "next/cache";
 import React from "react";
+import { prisma } from "../../../../lib/prisma";
 async function createUser(formData: FormData) {
   "use server";
-  const { prisma } = require("../../../../lib/prisma");
   const name = formData.get("name") as string;
   await prisma.user.create({
     data: {

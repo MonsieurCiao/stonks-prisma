@@ -6,7 +6,6 @@ import AddOrder from "../_components/AddOrder";
 
 async function deleteUser(formData: FormData) {
   "use server";
-  const { prisma } = require("../../../../lib/prisma");
   const userId = formData.get("userId") as string;
   await prisma.user.delete({
     where: { id: userId },

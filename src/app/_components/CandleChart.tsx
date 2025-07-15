@@ -1,12 +1,14 @@
 "use client";
 import Script from "next/script";
-import React, { useRef, useEffect, useMemo } from "react";
+import React, { useRef, useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
+// import ApexCharts from 'apexcharts'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function CandleChart() {
   const candleChartRef = useRef<HTMLDivElement>(null);
+  const [googleLoaded, setGoogleLoaded] = useState(false);
   const { data, error, isLoading } = useSWR("/api/stock-ohlc", fetcher, {
     refreshInterval: 60_000, // 60 seconds
   });
@@ -65,13 +67,13 @@ export default function CandleChart() {
       packages: ["corechart", "line"],
     });
     google.charts.setOnLoadCallback(draw);
-  }, [draw]);
+  }, [googleLoaded, draw]);
   return (
     <div>
       <Script
         src="https://www.gstatic.com/charts/loader.js"
         strategy="afterInteractive"
-        // onLoad={() => setGoogleLoaded(true)}
+        onLoad={() => setGoogleLoaded(true)}
       />
       <div ref={candleChartRef} className="w-full h-96"></div>
     </div>

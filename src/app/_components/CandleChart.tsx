@@ -1,5 +1,4 @@
 "use client";
-import Head from "next/head";
 import Script from "next/script";
 import React, { useRef, useEffect, useMemo } from "react";
 import useSWR from "swr";

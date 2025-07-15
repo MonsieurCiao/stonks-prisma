@@ -15,19 +15,27 @@ export default function CandleChart() {
     ? [
         {
           data: data
-            .map((point: any) => {
-              const now = new Date();
-              const [hours, minutes] = point.time.split(":").map(Number);
-              const datetime = new Date(now);
-              datetime.setHours(hours);
-              datetime.setMinutes(minutes);
-              datetime.setSeconds(0);
-              datetime.setMilliseconds(0);
-              return {
-                x: datetime,
-                y: [point.open, point.high, point.low, point.close],
-              };
-            })
+            .map(
+              (point: {
+                time: string;
+                open: number;
+                high: number;
+                low: number;
+                close: number;
+              }) => {
+                const now = new Date();
+                const [hours, minutes] = point.time.split(":").map(Number);
+                const datetime = new Date(now);
+                datetime.setHours(hours);
+                datetime.setMinutes(minutes);
+                datetime.setSeconds(0);
+                datetime.setMilliseconds(0);
+                return {
+                  x: datetime,
+                  y: [point.open, point.high, point.low, point.close],
+                };
+              }
+            )
             .reverse(), // optional: ensure chronological order
         },
       ]

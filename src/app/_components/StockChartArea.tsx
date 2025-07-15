@@ -1,5 +1,13 @@
 "use client";
-import { CartesianGrid, XAxis, YAxis, Legend, LineChart, Line } from "recharts";
+import {
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Legend,
+  LineChart,
+  Line,
+  Tooltip,
+} from "recharts";
 import useSWR from "swr";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -8,8 +16,12 @@ export default function StockChartArea() {
   const { data, error, isLoading } = useSWR("/api/stock-prices", fetcher, {
     refreshInterval: 60_000, // 60 seconds
   });
-  const highestPoint = data ? Math.max(...data.map((d: any) => d.price)) : 0;
-  const lowestPoint = data ? Math.min(...data.map((d: any) => d.price)) : 0;
+  const highestPoint = data
+    ? Math.max(...data.map((d: { time: string; price: number }) => d.price))
+    : 0; //!fix
+  const lowestPoint = data
+    ? Math.min(...data.map((d: { time: string; price: number }) => d.price))
+    : 0;
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading data</div>;
 
@@ -26,6 +38,7 @@ export default function StockChartArea() {
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="time" />
         <YAxis domain={[lowestPoint, highestPoint]} />
+        <Tooltip />
         <Legend />
         <Line type="monotone" dataKey="price" stroke="#8884d8" />
       </LineChart>

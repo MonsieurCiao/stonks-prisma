@@ -128,6 +128,7 @@ export async function GET() {
       low: ohlc.low,
       open: ohlc.open,
       close: ohlc.close,
+      avgPrice: (ohlc.open + ohlc.high + ohlc.low + ohlc.close) / 4,
     },
   });
 

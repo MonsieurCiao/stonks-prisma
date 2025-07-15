@@ -9,18 +9,36 @@ import {
   Tooltip,
 } from "recharts";
 import useSWR from "swr";
-
+type StockPrice = {
+  id: string;
+  stockSymbol: string;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  time: Date;
+  avgPrice: number;
+};
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function StockChartArea() {
   const { data, error, isLoading } = useSWR("/api/stock-prices", fetcher, {
     refreshInterval: 60_000, // 60 seconds
   });
-  const highestPoint = data
-    ? Math.max(...data.map((d: { time: string; price: number }) => d.price))
-    : 0; //!fix
-  const lowestPoint = data
-    ? Math.min(...data.map((d: { time: string; price: number }) => d.price))
+  // Format to [{ time, price }]
+  const formattedData = data.map((p: StockPrice) => ({
+    time: p.time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    price: Math.round(p.avgPrice * 100) / 100,
+  }));
+  const highestPoint = formattedData
+    ? Math.max(
+        ...formattedData.map((d: { time: string; price: number }) => d.price)
+      )
+    : 0;
+  const lowestPoint = formattedData
+    ? Math.min(
+        ...formattedData.map((d: { time: string; price: number }) => d.price)
+      )
     : 0;
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading data</div>;
@@ -32,7 +50,7 @@ export default function StockChartArea() {
       <LineChart
         width={730}
         height={300}
-        data={data.reverse()}
+        data={formattedData.reverse()}
         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
       >
         <CartesianGrid strokeDasharray="3 3" />

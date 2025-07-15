@@ -13,11 +13,6 @@ export async function GET() {
     take: 50, 
   });
 
-  // Format to [{ time, price }]
-  const formatted = prices.map((p) => ({
-    time: p.time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-    price: p.avgPrice
-  }));
 
-  return NextResponse.json(formatted);
+  return NextResponse.json(prices);
 }

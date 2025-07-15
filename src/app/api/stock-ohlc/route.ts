@@ -14,7 +14,7 @@ export async function GET() {
 
   // Format to [{ time, open, high, low, close }]
   const formatted = prices.map((p) => ({
-    time: p.time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    time: p.time.toISOString(),
     open: Math.round(p.open*100)/100,
     high: Math.round(p.high*100)/100,
     low: Math.round(p.low*100)/100,

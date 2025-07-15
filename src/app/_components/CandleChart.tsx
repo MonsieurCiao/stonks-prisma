@@ -22,20 +22,10 @@ export default function CandleChart() {
                 high: number;
                 low: number;
                 close: number;
-              }) => {
-                const now = new Date();
-                const [hours, minutes] = point.time.split(":").map(Number);
-                const datetime = new Date(now);
-                datetime.setHours(hours);
-                datetime.setMinutes(minutes);
-                datetime.setSeconds(0);
-                datetime.setMilliseconds(0);
-                console.log(datetime.getTime());
-                return {
-                  x: datetime.getTime(),
-                  y: [point.open, point.high, point.low, point.close],
-                };
-              }
+              }) => ({
+                x: new Date(point.time).getTime(),
+                y: [point.open, point.high, point.low, point.close],
+              })
             )
             .reverse(), // optional: ensure chronological order
         },

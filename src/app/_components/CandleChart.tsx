@@ -65,7 +65,7 @@ export default function CandleChart() {
       packages: ["corechart", "line"],
     });
     google.charts.setOnLoadCallback(draw);
-  }, []);
+  }, [draw]);
   return (
     <div>
       <Head>

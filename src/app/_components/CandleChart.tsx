@@ -30,6 +30,7 @@ export default function CandleChart() {
                 datetime.setMinutes(minutes);
                 datetime.setSeconds(0);
                 datetime.setMilliseconds(0);
+                console.log(datetime.getTime());
                 return {
                   x: datetime.getTime(),
                   y: [point.open, point.high, point.low, point.close],
@@ -40,6 +41,7 @@ export default function CandleChart() {
         },
       ]
     : [];
+  console.log(transformedSeries);
 
   const options: ApexOptions = {
     chart: {

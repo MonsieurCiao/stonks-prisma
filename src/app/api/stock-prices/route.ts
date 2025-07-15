@@ -19,5 +19,5 @@ export async function GET() {
     price: Math.round(p.avgPrice*100)/100,
   }));
 
-  return NextResponse.json([formatted, prices]);
+  return NextResponse.json(formatted);
 }

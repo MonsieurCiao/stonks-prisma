@@ -17,11 +17,11 @@ export default function StockChartArea() {
     refreshInterval: 60_000, // 60 seconds
   });
 
-  const highestPoint = data[0]
-    ? Math.max(...data[0].map((d: { time: string; price: number }) => d.price))
+  const highestPoint = data
+    ? Math.max(...data.map((d: { time: string; price: number }) => d.price))
     : 0;
-  const lowestPoint = data[0]
-    ? Math.min(...data[0].map((d: { time: string; price: number }) => d.price))
+  const lowestPoint = data
+    ? Math.min(...data.map((d: { time: string; price: number }) => d.price))
     : 0;
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading data</div>;
@@ -33,7 +33,7 @@ export default function StockChartArea() {
       <LineChart
         width={730}
         height={300}
-        data={data[0].reverse()}
+        data={data.reverse()}
         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
       >
         <CartesianGrid strokeDasharray="3 3" />

@@ -26,6 +26,7 @@ export default function StockChartArea() {
     refreshInterval: 60_000, // 60 seconds
   });
   // Format to [{ time, price }]
+  if (!data || data === undefined) return <div>Loading...</div>;
   const formattedData = data.map((p: StockPrice) => ({
     time: p.time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     price: Math.round(p.avgPrice * 100) / 100,

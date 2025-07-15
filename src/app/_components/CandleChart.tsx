@@ -31,7 +31,7 @@ export default function CandleChart() {
                 datetime.setSeconds(0);
                 datetime.setMilliseconds(0);
                 return {
-                  x: datetime,
+                  x: datetime.getTime(),
                   y: [point.open, point.high, point.low, point.close],
                 };
               }

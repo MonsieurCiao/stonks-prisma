@@ -1,81 +1,39 @@
 "use client";
-import Script from "next/script";
-import React, { useRef, useEffect, useMemo, useState } from "react";
-import useSWR from "swr";
-// import ApexCharts from 'apexcharts'
+// import useSWR from "swr";
+import dynamic from "next/dynamic";
+const ApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+// const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function CandleChart() {
-  const candleChartRef = useRef<HTMLDivElement>(null);
-  const [googleLoaded, setGoogleLoaded] = useState(false);
-  const { data, error, isLoading } = useSWR("/api/stock-ohlc", fetcher, {
-    refreshInterval: 60_000, // 60 seconds
-  });
-
-  const draw = useMemo(
-    () => () => {
-      if (!data || isLoading || error) return;
-
-      const dataTable = new google.visualization.DataTable();
-      dataTable.addColumn("string", "Time");
-      dataTable.addColumn("number", "Open");
-      dataTable.addColumn("number", "High");
-      dataTable.addColumn("number", "Low");
-      dataTable.addColumn("number", "Close");
-
-      data.forEach(
-        (item: {
-          time: string;
-          open: number;
-          high: number;
-          low: number;
-          close: number;
-        }) => {
-          dataTable.addRow([
-            item.time,
-            item.open,
-            item.high,
-            item.low,
-            item.close,
-          ]);
-        }
-      );
-
-      const options = {
-        title: "Stock OHLC Chart",
-        // legend: { position: "bottom" },
-        // hAxis: { title: "Time" },
-        // vAxis: { title: "Price" },
-        // candlestick: {
-        //   fallingColor: { strokeWidth: 0, fill: "#a52714" }, // red
-        //   risingColor: { strokeWidth: 0, fill: "#0f9d58" }, // green
-        // },
-      };
-
-      const chart = new google.visualization.CandlestickChart(
-        candleChartRef.current as HTMLDivElement
-      );
-      chart.draw(dataTable, options);
+  // const { data, error, isLoading } = useSWR("/api/stock-ohlc", fetcher, {
+  //   refreshInterval: 60_000, // 60 seconds
+  // });
+  const option = {
+    chart: {
+      id: "apexchart-example",
     },
-    [data, isLoading, error]
-  );
+    xaxis: {
+      categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999],
+    },
+  };
 
-  useEffect(() => {
-    // Load Google Charts library
-    google.charts.load("current", {
-      packages: ["corechart", "line"],
-    });
-    google.charts.setOnLoadCallback(draw);
-  }, [googleLoaded, draw]);
+  const series = [
+    {
+      name: "series-1",
+      data: [30, 40, 35, 50, 49, 60, 70, 91, 125],
+    },
+  ];
+
   return (
-    <div>
-      <Script
-        src="https://www.gstatic.com/charts/loader.js"
-        strategy="afterInteractive"
-        onLoad={() => setGoogleLoaded(true)}
+    <>
+      <ApexChart
+        type="line"
+        options={option}
+        series={series}
+        height={200}
+        width={500}
       />
-      <div ref={candleChartRef} className="w-full h-96"></div>
-    </div>
+    </>
   );
 }

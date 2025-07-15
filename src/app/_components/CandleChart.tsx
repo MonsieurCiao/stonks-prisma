@@ -2,6 +2,7 @@
 // import useSWR from "swr";
 import dynamic from "next/dynamic";
 const ApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
+import { ApexOptions } from "apexcharts";
 
 // const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -9,28 +10,46 @@ export default function CandleChart() {
   // const { data, error, isLoading } = useSWR("/api/stock-ohlc", fetcher, {
   //   refreshInterval: 60_000, // 60 seconds
   // });
-  const option = {
+  const options: ApexOptions = {
+    series: [
+      {
+        data: [
+          {
+            x: new Date(1538778600000),
+            y: [6629.81, 6650.5, 6623.04, 6633.33],
+          },
+          {
+            x: new Date(1538780400000),
+            y: [6632.01, 6643.59, 6620, 6630.11],
+          },
+          // more data...
+        ],
+      },
+    ],
     chart: {
-      id: "apexchart-example",
+      type: "candlestick",
+      height: 350,
+    },
+    title: {
+      text: "CandleStick Chart",
+      align: "left",
     },
     xaxis: {
-      categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999],
+      type: "datetime",
+    },
+    yaxis: {
+      tooltip: {
+        enabled: true,
+      },
     },
   };
-
-  const series = [
-    {
-      name: "series-1",
-      data: [30, 40, 35, 50, 49, 60, 70, 91, 125],
-    },
-  ];
 
   return (
     <>
       <ApexChart
-        type="line"
-        options={option}
-        series={series}
+        type="candlestick"
+        options={options}
+        series={options.series}
         height={200}
         width={500}
       />

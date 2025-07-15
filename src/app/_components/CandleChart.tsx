@@ -1,5 +1,6 @@
 "use client";
 import Head from "next/head";
+import Script from "next/script";
 import React, { useRef, useEffect, useMemo } from "react";
 import useSWR from "swr";
 
@@ -68,12 +69,11 @@ export default function CandleChart() {
   }, [draw]);
   return (
     <div>
-      <Head>
-        <script
-          type="text/javascript"
-          src="https://www.gstatic.com/charts/loader.js"
-        ></script>
-      </Head>
+      <Script
+        src="https://www.gstatic.com/charts/loader.js"
+        strategy="afterInteractive"
+        // onLoad={() => setGoogleLoaded(true)}
+      />
       <div ref={candleChartRef} className="w-full h-96"></div>
     </div>
   );

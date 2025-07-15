@@ -10,13 +10,13 @@ export async function GET() {
     orderBy: {
       time: "desc",
     },
-    take: 50, // latest 50 data points, why does this only take 50 and not slide when new come in?
+    take: 50, 
   });
 
   // Format to { time, price }
   const formatted = prices.map((p) => ({
     time: p.time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-    price: p.price,
+    price: p.high + p.low + p.open + p.close / 4, // Average price for display
   }));
 
   return NextResponse.json(formatted);

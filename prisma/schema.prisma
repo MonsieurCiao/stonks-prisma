@@ -39,7 +39,10 @@ model Order {
 model StockPrice {
   id          String   @id @default(cuid())
   stockSymbol String
-  price       Float
+  open        Float
+  high        Float
+  low         Float
+  close       Float
   time        DateTime @default(now())
 
   @@map(name: "stock_prices")

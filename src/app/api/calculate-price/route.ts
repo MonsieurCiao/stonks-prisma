@@ -1,27 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "../../../../lib/prisma";
 
-
-// function calculatePrice(  orders: { price: number; quantity: number; type: 'BUY' | 'SELL' }[], curPrice: number | null): number | null {
-//   // 1. Calculate new price based on recent orders
-//   // Your price calculation logic here (e.g., weighted average, last trade, etc.)
-//   // if (orders.length === 0) return null;
-//   // const total = orders.reduce((sum, order) => sum + order.price, 0);
-//   // return total / orders.length;
-//   if(curPrice === null) curPrice = 10;
-
-//   //agents
-//   for(let i = 0; i < 20; i++){
-//     const action = Math.random() < 0.5 ? 'BUY' : 'SELL';
-//     const priceChange = (action === 'BUY' ? 1 : -1) * curPrice * 0.01 ;
-//     curPrice += priceChange;
-//   }
-//   return curPrice; 
-// }
 type Order = {
   price: number;
   quantity: number;
-  createdAt: Date;
+  type: "BUY" | "SELL"; 
 };
 
 type Trade = {
@@ -36,7 +19,22 @@ type OHLC = {
   low: number;
   close: number;
 };
-function calculateOHLC(buyOrders: Order[], sellOrders: Order[]): OHLC | null {
+function generateOrders(count: number, lastAvgPrice: number): Order[] {
+  const orders: Order[] = [];
+  for (let i = 0; i < count; i++) {
+    orders.push({
+      price: lastAvgPrice + lastAvgPrice * (Math.random() * 2 -1) * 0.05, //last avg price +- 0%<->5%
+      type: Math.random() > 0.5 ? "BUY" : "SELL", 
+      quantity: Math.floor(Math.random() * 5) + 1, // quantity between 1 and 5
+    });
+  }
+  return orders;
+}
+function calculateOHLC(buyOrders: Order[], sellOrders: Order[], lastAvgPrice: number): OHLC | null {
+  const generatedOrders = generateOrders(10, lastAvgPrice);
+  buyOrders = [...buyOrders, ...generatedOrders.filter(o => o.type === 'BUY')];
+  sellOrders = [...sellOrders, ...generatedOrders.filter(o => o.type === 'SELL')];
+
   const matchedTrades: Trade[] = [];
 
   // Sort buy orders descending (highest price first), sell orders ascending
@@ -95,14 +93,31 @@ export async function GET() {
       },
     },
   });
+  const lastStockTrade = await prisma.stockPrice.findFirst({
+    where: { stockSymbol: "GLSCH" },
+    orderBy: { time: "desc" },
+    take: 1,
+  });
+  const lastAvgPrice = lastStockTrade !== null ? lastStockTrade.avgPrice : 5;
   
 
   // 2. Execute order book
   const buyOrders = orders.filter(o => o.type === 'BUY');
   const sellOrders = orders.filter(o => o.type === 'SELL');
-  const ohlc = calculateOHLC(buyOrders, sellOrders);
+  const ohlc = calculateOHLC(buyOrders, sellOrders, lastAvgPrice);
   if (ohlc === null) {
-    return NextResponse.json({ message: "No orders" }, { status: 200 });
+    const lastStockPrice = await prisma.stockPrice.findFirst({
+      where: { stockSymbol: "GLSCH" },
+      orderBy: { time: "desc" },
+      take: 1,
+    });
+    const lastOHLC ={
+      open: lastStockPrice?.open || 0,
+      high: lastStockPrice?.high || 0,
+      low: lastStockPrice?.low || 0,
+      close: lastStockPrice?.close || 0,
+    }
+    return NextResponse.json({ success: true, lastOHLC });
   }
 
   // 3. Store new price in DB

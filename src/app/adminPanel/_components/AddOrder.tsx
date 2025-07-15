@@ -2,7 +2,8 @@ import { revalidatePath } from "next/cache";
 import React from "react";
 import { prisma } from "../../../../lib/prisma";
 
-export default function AddOrder({ userId }: { userId: string }) {
+export default async function AddOrder({ userId }: { userId: string }) {
+  const typeSelect = React.useRef<HTMLSelectElement>(null);
   async function addOrder(formData: FormData) {
     "use server";
     const stockSymbol = formData.get("stockSymbol") as "GLSCH";
@@ -20,6 +21,13 @@ export default function AddOrder({ userId }: { userId: string }) {
     });
     revalidatePath(`/adminPanel/${userId}`);
   }
+  const lastTrade = await prisma.stockPrice.findFirst({
+    where: { stockSymbol: "GLSCH" },
+    orderBy: { time: "desc" },
+    take: 1,
+  });
+  const lastPrice = lastTrade ? lastTrade.avgPrice : 5;
+
   return (
     <form
       className="flex flex-col items-center mt-8 w-xs max-w-md"
@@ -31,25 +39,36 @@ export default function AddOrder({ userId }: { userId: string }) {
       >
         <option value="GLSCH">GLSCH</option>
       </select>
+      <select
+        name="type"
+        ref={typeSelect}
+        className="border border-gray-300 rounded-lg p-2 mb-4 w-full"
+      >
+        <option value="BUY">Buy</option>
+        <option value="SELL">Sell</option>
+      </select>
       <input
         type="number"
         name="quantity"
         placeholder="Quantity"
         className="border border-gray-300 rounded-lg p-2 mb-4 w-full"
       />
+      <label className="mb-2">
+        Wir empfehlen einen{" "}
+        {typeSelect.current?.value === "BUY"
+          ? `Kaufpreis von ${
+              Math.round((lastPrice + lastPrice * 0.03) * 100) / 100
+            }`
+          : `Verkaufspreis von ${
+              Math.round((lastPrice - lastPrice * 0.03) * 100) / 100
+            }`}{" "}
+      </label>
       <input
         type="number"
         name="price"
-        placeholder="Price"
+        defaultValue={lastPrice}
         className="border border-gray-300 rounded-lg p-2 mb-4 w-full"
       />
-      <select
-        name="type"
-        className="border border-gray-300 rounded-lg p-2 mb-4 w-full"
-      >
-        <option value="BUY">Buy</option>
-        <option value="SELL">Sell</option>
-      </select>
       <button
         type="submit"
         className="bg-blue-500 text-white rounded-lg p-2

@@ -30,6 +30,8 @@ export default function StockChartArea() {
   if (error) return <div>Error loading data</div>;
 
   return (
+    //need to implement zooming and panning
+    //https://recharts.org/en-US/examples/ZoomableLineChart
     <div className="flex flex-col justify-center items-center gap-4">
       <AreaChart width={730} height={300} data={data}>
         <CartesianGrid strokeDasharray="3 3" />

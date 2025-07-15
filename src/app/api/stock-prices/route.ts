@@ -8,9 +8,9 @@ export async function GET() {
       stockSymbol: "GLSCH",
     },
     orderBy: {
-      time: "asc",
+      time: "desc",
     },
-    take: 50, // latest 50 data points
+    take: 50, // latest 50 data points, why does this only take 50 and not slide when new come in?
   });
 
   // Format to { time, price }

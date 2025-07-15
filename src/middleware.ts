@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
+// import { NextResponse } from 'next/server';
 
 
-export function middleware() {
-  return new NextResponse('Site under maintenance', { status: 503 });
-}
+// export function middleware() {
+//   return new NextResponse('Site under maintenance', { status: 503 });
+// }

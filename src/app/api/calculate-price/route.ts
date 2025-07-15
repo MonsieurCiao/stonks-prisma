@@ -75,6 +75,10 @@ function calculateOHLC(buyOrders: Order[], sellOrders: Order[], lastAvgPrice: nu
 
   const prices = matchedTrades.map(t => t.price);
 
+  //round all these prices to 2 decimal places
+  for (let i = 0; i < prices.length; i++) {
+    prices[i] = Math.round(prices[i] * 100) / 100;
+  }
   return {
     open: prices[0],
     high: Math.max(...prices),

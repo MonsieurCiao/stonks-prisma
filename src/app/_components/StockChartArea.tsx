@@ -7,6 +7,7 @@ import {
   LineChart,
   Line,
   Tooltip,
+  ResponsiveContainer,
 } from "recharts";
 import useSWR from "swr";
 
@@ -30,9 +31,8 @@ export default function StockChartArea() {
     //need to implement zooming and panning
     //https://recharts.org/en-US/examples/ZoomableLineChart
     <div className="flex flex-col justify-center items-center gap-4">
+      <ResponsiveContainer width="100%" height={"300px"}>
       <LineChart
-        width={730}
-        height={300}
         data={data.reverse()}
         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
       >
@@ -43,6 +43,7 @@ export default function StockChartArea() {
         <Legend />
         <Line type="monotone" dataKey="price" stroke="#8884d8" />
       </LineChart>
+      </ResponsiveContainer>
     </div>
   );
 }

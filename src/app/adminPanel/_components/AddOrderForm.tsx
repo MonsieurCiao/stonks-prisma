@@ -1,3 +1,4 @@
+"use client";
 import { addOrder } from "@/actions/actions";
 import React from "react";
 

@@ -30,8 +30,8 @@ export default function StockChartArea() {
   return (
     //need to implement zooming and panning
     //https://recharts.org/en-US/examples/ZoomableLineChart
-    <div className="flex flex-col justify-center items-center gap-4">
-      <ResponsiveContainer width="100%" height={"300px"}>
+    <div className="w-full h-[300px] flex flex-col justify-center items-center gap-4">
+      <ResponsiveContainer width="100%" height={"100%"}>
       <LineChart
         data={data.reverse()}
         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}

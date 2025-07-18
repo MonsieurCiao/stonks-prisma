@@ -23,15 +23,30 @@ type OHLC = {
   low: number;
   close: number;
 };
-async function deleteOrder(orderId: string, userId: string, tradedQuantity: number, tradePrice: number, type: "BUY" | "SELL") {
-  await prisma.order.delete({
-    where: {
-      id: orderId,
-      userId: userId,
-    },
-  });
+async function updateOrder(orderId: string, userId: string, tradedQuantity: number, tradePrice: number, type: "BUY" | "SELL", deleteOrder: boolean) {
+  if (deleteOrder) {
+    await prisma.order.delete({
+      where: {
+        id: orderId,
+        userId: userId,
+      },
+    });
+  }
+  else{
+    await prisma.order.update({
+      where: {
+        id: orderId,
+        userId: userId,
+      },
+      data: {
+        quantity: { decrement: tradedQuantity },
+      },
+    });
+  }
   // NOTICE that the updating of money and assets should be done in the addOrder function
   // this is where the money and assets are transferred
+
+  //give user asset if he bought
   if(type === "BUY") {
     await prisma.asset.update({
       where: {
@@ -43,6 +58,7 @@ async function deleteOrder(orderId: string, userId: string, tradedQuantity: numb
       },
     });
   }
+  //give user money if he sold
   else if(type === "SELL") {
     await prisma.user.update({
       where: {
@@ -56,6 +72,7 @@ async function deleteOrder(orderId: string, userId: string, tradedQuantity: numb
 }
 function generateOrders(count: number, lastAvgPrice: number): Order[] {
   const orders: Order[] = [];
+  if (lastAvgPrice <= 0) lastAvgPrice = 5000;
   for (let i = 0; i < count; i++) {
     orders.push({
       price: lastAvgPrice + lastAvgPrice * (Math.random() * 2 -1) * 0.05, //last avg price +- 0%<->5%
@@ -101,7 +118,10 @@ async function calculateOHLC(buyOrders: Order[], sellOrders: Order[], lastAvgPri
       sell.quantity -= tradedQuantity;
 
       //update orders
-      if (buy.quantity === 0) await deleteOrder(buy.id, buy.userId, tradedQuantity, tradePrice, 'BUY');
+      if (buy.quantity === 0) await updateOrder(buy.id, buy.userId, tradedQuantity, tradePrice, 'BUY', true);
+      if (sell.quantity === 0) await updateOrder(sell.id, sell.userId, tradedQuantity, tradePrice, 'SELL', true);
+      if (buy.quantity > 0) await updateOrder(buy.id, buy.userId, tradedQuantity, tradePrice, 'BUY', false);
+      if (sell.quantity > 0) await updateOrder(sell.id, sell.userId, tradedQuantity, tradePrice, 'SELL', false);
 
       if (buy.quantity === 0) buyIndex++;
       if (sell.quantity === 0) sellIndex++;

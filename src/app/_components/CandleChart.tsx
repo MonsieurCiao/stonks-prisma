@@ -56,12 +56,14 @@ export default function CandleChart() {
   if (isLoading || !data) return <div>Loading...</div>;
 
   return (
-    <ApexChart
-      type="candlestick"
-      options={options}
-      series={transformedSeries}
-      height={350}
-      width={600}
-    />
+    <div className="w-full h-[350px]">
+      <ApexChart
+        type="candlestick"
+        options={options}
+        series={transformedSeries}
+        height={350}
+        width={"100%"}
+      />
+    </div>
   );
 }

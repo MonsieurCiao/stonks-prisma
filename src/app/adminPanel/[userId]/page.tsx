@@ -20,6 +20,9 @@ export default async function User({
   const resolved = await params;
   const curUser = await prisma.user.findUnique({
     where: { id: resolved.userId },
+    include: {
+      assets: true,
+    },
   });
   if (!curUser) {
     return <div>User not found</div>;
@@ -35,9 +38,25 @@ export default async function User({
           delete
         </button>
       </form>
-      <div className="mt-16 text-2xl">
+      <div className="mt-16 text-2xl text-center">
         <h1 className="text-4xl">{curUser.name}</h1>
         <p className="text-lg">Money: ${curUser.money.toFixed(2)}</p>
+      </div>
+      <div className="mt-8 text-lg">
+        <p className="mb-4">Assets:</p>
+        <div className="flex items-center justify-center gap-4">
+          {curUser.assets.map((asset) => (
+            <div
+              key={asset.stockSymbol}
+              className="border p-2 rounded-lg bg-gray-100"
+            >
+              <p>
+                {asset.stockSymbol}: {asset.quantity} shares
+              </p>
+              <p>Value: ${(asset.quantity * 5).toFixed(2)}</p>
+            </div>
+          ))}
+        </div>
       </div>
       <div className="mt-8 text-lg flex justify-between w-full max-w-2xl px-4">
         <BuyOrderList userId={curUser.id} />

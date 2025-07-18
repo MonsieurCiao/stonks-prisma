@@ -195,7 +195,7 @@ export async function GET() {
         low: lastOHLC.low,
         open: lastOHLC.open,
         close: lastOHLC.close,
-        avgPrice: (lastOHLC.open + lastOHLC.high + lastOHLC.low + lastOHLC.close) / 4,
+        avgPrice: (lastOHLC.open + lastOHLC.close) / 4,
       }
     });
     return NextResponse.json({ success: true, lastOHLC });
@@ -209,7 +209,7 @@ export async function GET() {
       low: ohlc.low,
       open: ohlc.open,
       close: ohlc.close,
-      avgPrice: (ohlc.open + ohlc.high + ohlc.low + ohlc.close) / 4,
+      avgPrice: (ohlc.open + ohlc.close) / 4,
     },
   });
 

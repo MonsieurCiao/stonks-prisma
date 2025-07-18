@@ -59,7 +59,7 @@ export default function AddOrderForm({
           step={0.01}
           type="number"
           name="price"
-          defaultValue={recommendedPrice}
+          defaultValue={Math.round(recommendedPrice * 100) / 100}
           className="border border-gray-300 rounded-lg p-2 mb-4 w-full"
         />
         {form.message && (

@@ -3,20 +3,79 @@
 import { revalidatePath } from "next/cache";
 import { prisma } from "../../lib/prisma";
 
-export async function addOrder(formData: FormData) {
-    const stockSymbol = formData.get("stockSymbol") as "GLSCH";
-    const quantity = parseInt(formData.get("quantity") as string, 10);
-    const price = parseFloat(formData.get("price") as string);
-    const type = formData.get("type") as "BUY" | "SELL";
-    const userId = formData.get("userId") as string;
-    await prisma.order.create({
+export async function addOrder(prevState: {message:string | null}, formData: FormData): Promise<{message:string | null}> {
+  const stockSymbol = formData.get("stockSymbol") as "GLSCH";
+  const quantity = parseInt(formData.get("quantity") as string, 10);
+  const price = parseFloat(formData.get("price") as string);
+  const type = formData.get("type") as "BUY" | "SELL";
+  const userId = formData.get("userId") as string;
+
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+  if (!user) {
+    return{ message: "User not found"};
+  }
+
+  if(type=== "SELL"){
+    const asset = await prisma.asset.findFirst({
+      where: {
+        userId: userId,
+        stockSymbol: stockSymbol,
+      }
+    });
+    if (!asset) return {message: "Asset not found"};
+    const assetAmount = asset.quantity;
+
+    if (quantity > assetAmount) {
+      return {message: "Not enough stock quantity"};
+    }
+    await prisma.asset.update({
+      where: {
+        userId: userId,
+        stockSymbol: stockSymbol,
+      },
       data: {
-        stockSymbol,
-        quantity,
-        price,
-        type,
-        userId,
+        quantity: { decrement: quantity },
       },
     });
-    revalidatePath(`/adminPanel/${userId}`);
   }
+
+  if(type==="BUY"){
+    const totalPrice = quantity * price;
+    if (user.money < totalPrice) {
+      return {message: "Not enough money"};
+    }
+
+    await prisma.user.update({
+      where:{
+        id: userId,
+      },
+      data: {
+        money:{ decrement: totalPrice},
+      }
+    });
+  }
+
+  await prisma.order.create({
+    data: {
+      stockSymbol,
+      quantity,//fis //jee //nero //nip //monet 
+      price, //git (lab) /react
+      type,
+      userId,
+    },
+  });
+  revalidatePath(`/adminPanel/${userId}`);
+  return {message:"success"}
+}
+// export async function cancelOrder(formData: FormData) {
+//   "use server";
+//   const orderId = formData.get("orderId") as string;
+//   const userId = formData.get("userId") as string;
+//   const tradedQuantity = parseFloat(formData.get("tradedQuantity") as string);
+//   const type = formData.get("type") as "BUY" | "SELL";
+
+//   // await deleteOrder(orderId, userId, tradedQuantity, type);
+//   revalidatePath(`/adminPanel/${userId}`);
+// }

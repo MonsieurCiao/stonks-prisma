@@ -10,12 +10,22 @@ datasource db {
   directUrl = env("POSTGRES_URL") // uses a direct connection
 }
 
+// IMPORTANT is that every user only has one asset per stock
+model Asset {
+  id          String @id @default(cuid())
+  stockSymbol String @unique
+  quantity    Float  @default(0)
+  userId      String //foreign key
+  user        User   @relation(fields: [userId], references: [id])
+}
+
 model User {
   id        String   @id @default(cuid())
   name      String
   createdAt DateTime @default(now()) @map(name: "created_at")
   orders    Order[]
-  money     Float    @default(0)
+  money     Float    @default(5000)
+  assets    Asset[]
 
   @@map(name: "users")
 }
@@ -31,6 +41,7 @@ model Order {
   price       Float
   quantity    Float
   type        OrderType
+  assetId     String? //foreign key, optional because it might not be set for SELL
   createdAt   DateTime  @default(now())
   userId      String //foreign key
   user        User      @relation(fields: [userId], references: [id])

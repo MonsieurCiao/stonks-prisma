@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
 import { prisma } from "../../../../lib/prisma";
 
+// THIS IS BASICALLY THE ORDER BOOK
+
 type Order = {
   price: number;
   quantity: number;
+  userId: string;
+  id: string;
   type: "BUY" | "SELL"; 
 };
 
@@ -19,6 +23,37 @@ type OHLC = {
   low: number;
   close: number;
 };
+async function deleteOrder(orderId: string, userId: string, tradedQuantity: number, tradePrice: number, type: "BUY" | "SELL") {
+  await prisma.order.delete({
+    where: {
+      id: orderId,
+      userId: userId,
+    },
+  });
+  // NOTICE that the updating of money and assets should be done in the addOrder function
+  // this is where the money and assets are transferred
+  if(type === "BUY") {
+    await prisma.asset.update({
+      where: {
+        userId: userId,
+        stockSymbol: "GLSCH",
+      },
+      data: {
+        quantity: { increment: tradedQuantity },
+      },
+    });
+  }
+  else if(type === "SELL") {
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        money: { increment: tradePrice* tradedQuantity },
+      },
+    });
+  }
+}
 function generateOrders(count: number, lastAvgPrice: number): Order[] {
   const orders: Order[] = [];
   for (let i = 0; i < count; i++) {
@@ -26,11 +61,13 @@ function generateOrders(count: number, lastAvgPrice: number): Order[] {
       price: lastAvgPrice + lastAvgPrice * (Math.random() * 2 -1) * 0.05, //last avg price +- 0%<->5%
       type: Math.random() > 0.5 ? "BUY" : "SELL", 
       quantity: Math.floor(Math.random() * 5) + 1, // quantity between 1 and 5
+      userId: "1", //indicates bot
+      id: crypto.randomUUID(),
     });
   }
   return orders;
 }
-function calculateOHLC(buyOrders: Order[], sellOrders: Order[], lastAvgPrice: number): OHLC | null {
+async function calculateOHLC(buyOrders: Order[], sellOrders: Order[], lastAvgPrice: number): Promise<OHLC | null> {
   const generatedOrders = generateOrders(10, lastAvgPrice);
   buyOrders = [...buyOrders, ...generatedOrders.filter(o => o.type === 'BUY')];
   sellOrders = [...sellOrders, ...generatedOrders.filter(o => o.type === 'SELL')];
@@ -62,6 +99,9 @@ function calculateOHLC(buyOrders: Order[], sellOrders: Order[], lastAvgPrice: nu
       // Decrement order quantities
       buy.quantity -= tradedQuantity;
       sell.quantity -= tradedQuantity;
+
+      //update orders
+      if (buy.quantity === 0) await deleteOrder(buy.id, buy.userId, tradedQuantity, tradePrice, 'BUY');
 
       if (buy.quantity === 0) buyIndex++;
       if (sell.quantity === 0) sellIndex++;
@@ -104,7 +144,7 @@ export async function GET() {
   // 2. Execute order book
   const buyOrders = orders.filter(o => o.type === 'BUY');
   const sellOrders = orders.filter(o => o.type === 'SELL');
-  const ohlc = calculateOHLC(buyOrders, sellOrders, lastAvgPrice);
+  const ohlc = await calculateOHLC(buyOrders, sellOrders, lastAvgPrice);
   if (ohlc === null) {
     const lastStockPrice = await prisma.stockPrice.findFirst({
       where: { stockSymbol: "GLSCH" },

@@ -37,6 +37,7 @@ export default async function User({
       </form>
       <div className="mt-16 text-2xl">
         <h1 className="text-4xl">{curUser.name}</h1>
+        <p className="text-lg">Money: ${curUser.money.toFixed(2)}</p>
       </div>
       <div className="mt-8 text-lg flex justify-between w-full max-w-2xl px-4">
         <BuyOrderList userId={curUser.id} />

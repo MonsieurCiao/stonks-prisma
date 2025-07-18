@@ -15,7 +15,6 @@ export default function CandleChart() {
     ? [
         {
           data: data
-            .slice(-20)
             .map(
               (point: {
                 time: string;

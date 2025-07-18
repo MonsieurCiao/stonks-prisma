@@ -9,7 +9,7 @@ export async function GET() {
     orderBy: {
       time: "desc",
     },
-    take: 50, 
+    take: 20, 
   });
 
   // Format to [{ time, open, high, low, close }]

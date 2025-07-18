@@ -48,13 +48,18 @@ async function updateOrder(orderId: string, userId: string, tradedQuantity: numb
 
   //give user asset if he bought
   if(type === "BUY") {
-    await prisma.asset.update({
+    await prisma.asset.upsert({
       where: {
         userId: userId,
         stockSymbol: "GLSCH",
       },
-      data: {
+      update: {
         quantity: { increment: tradedQuantity },
+      },
+      create: {
+        userId: userId,
+        stockSymbol: "GLSCH",
+        quantity: tradedQuantity,
       },
     });
   }
@@ -177,6 +182,16 @@ export async function GET() {
       low: lastStockPrice?.low || 0,
       close: lastStockPrice?.close || 0,
     }
+    await prisma.stockPrice.create({
+      data: {
+        stockSymbol: "GLSCH",
+        high: lastOHLC.high,
+        low: lastOHLC.low,
+        open: lastOHLC.open,
+        close: lastOHLC.close,
+        avgPrice: (lastOHLC.open + lastOHLC.high + lastOHLC.low + lastOHLC.close) / 4,
+      }
+    });
     return NextResponse.json({ success: true, lastOHLC });
   }
 

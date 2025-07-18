@@ -125,12 +125,12 @@ async function calculateOHLC(buyOrders: Order[], sellOrders: Order[], lastAvgPri
       //update orders
       if (buy.quantity === 0 && buy.userId !== "1") {
         await updateOrder(buy.id, buy.userId, tradedQuantity, tradePrice, 'BUY', true);
-      } else {
+      } else if( buy.quantity > 0 && buy.userId !== "1") {
         await updateOrder(buy.id, buy.userId, tradedQuantity, tradePrice, 'BUY', false);
       }
       if (sell.quantity === 0 && sell.userId !== "1") {
         await updateOrder(sell.id, sell.userId, tradedQuantity, tradePrice, 'SELL', true);
-      } else {
+      } else if( buy.quantity > 0 && buy.userId !== "1") {
         await updateOrder(sell.id, sell.userId, tradedQuantity, tradePrice, 'SELL', false);
       }
 

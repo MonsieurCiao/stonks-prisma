@@ -1,5 +1,6 @@
 import React from "react";
 import { prisma } from "../../../../lib/prisma";
+import OrderListItem from "./OrderListItem";
 
 export default async function OrderList({ userId }: { userId: string }) {
   const buyOrders = await prisma.order.findMany({
@@ -15,15 +16,7 @@ export default async function OrderList({ userId }: { userId: string }) {
       <h2 className="text-2xl mb-4">Pending Orders</h2>
       <ul className="list-none rounded-lg p-3">
         {buyOrders.map((order) => (
-          <li
-            key={order.id}
-            className={`border ${
-              order.type === "SELL" ? "border-red-300" : "border-green-300"
-            } rounded-lg mb-2 p-2`}
-          >
-            <span className="font-bold">{order.stockSymbol}</span> -{" "}
-            {order.quantity} shares at ${order.price.toFixed(2)} each
-          </li>
+          <OrderListItem order={order} userId={userId} key={order.id} />
         ))}
       </ul>
     </div>

@@ -17,6 +17,8 @@ model Asset {
   quantity    Float  @default(0)
   userId      String //foreign key
   user        User   @relation(fields: [userId], references: [id])
+
+  @@unique([stockSymbol, userId])
 }
 
 model User {

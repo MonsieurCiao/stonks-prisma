@@ -76,13 +76,49 @@ export async function deleteUser(formData: FormData) {
   });
   revalidatePath("/adminPanel");
 }
-// export async function cancelOrder(formData: FormData) {
-//   "use server";
-//   const orderId = formData.get("orderId") as string;
-//   const userId = formData.get("userId") as string;
-//   const tradedQuantity = parseFloat(formData.get("tradedQuantity") as string);
-//   const type = formData.get("type") as "BUY" | "SELL";
+export async function cancelOrder(formData: FormData) {
+  const orderId = formData.get("orderId") as string;
+  const userId = formData.get("userId") as string;
+  // const tradedQuantity = parseFloat(formData.get("tradedQuantity") as string);
+  const type = formData.get("type") as "BUY" | "SELL";
 
-//   // await deleteOrder(orderId, userId, tradedQuantity, type);
-//   revalidatePath(`/adminPanel/${userId}`);
-// }
+  if (!orderId || !userId || !type) {
+    throw new Error("Missing required fields");
+  }
+  const order = await prisma.order.findUnique({
+    where: {id: orderId, userId: userId},
+  })
+  if(!order) throw new Error("Order not found");
+  //giveback money
+  if(type=== "BUY") {
+    await prisma.user.update({
+      where: {id: userId},
+      data: {
+        money: {increment: order.price * order.quantity},
+      },
+    });
+  }else{
+    //give back asset
+    await prisma.asset.upsert({
+      where: {
+        userId: userId,
+        stockSymbol: order.stockSymbol,
+      },
+      update: {
+        quantity: { increment: order.quantity },
+      },
+      create: {
+        userId: userId,
+        stockSymbol: order.stockSymbol,
+        quantity: order.quantity,
+      },
+    });
+  }
+  //delete order
+  await prisma.order.delete({
+    where:{id: orderId, userId: userId}
+  })
+
+  // await deleteOrder(orderId, userId, tradedQuantity, type);
+  revalidatePath(`/adminPanel/${userId}`);
+}

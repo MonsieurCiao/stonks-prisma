@@ -14,7 +14,7 @@ export default async function UserList() {
               <span className="font-bold">{user.name}</span> -{" "}
               {Math.round(user.money * 100) / 100}
             </Link>
-            <form className="absolute top-4 right-4" action={deleteUser}>
+            <form className="" action={deleteUser}>
               <input type="hidden" name="userId" value={user.id} />
               <button
                 className="p-1 bg-red-500 text-white rounded-lg hover:bg-red-600 cursor-pointer"

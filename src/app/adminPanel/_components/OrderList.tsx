@@ -12,7 +12,7 @@ export default async function OrderList({ userId }: { userId: string }) {
   });
   return (
     <div className="flex flex-col items-center mt-8 w-xs max-w-md">
-      <h2 className="text-2xl mb-4">Orders</h2>
+      <h2 className="text-2xl mb-4">Pending Orders</h2>
       <ul className="list-none rounded-lg p-3">
         {buyOrders.map((order) => (
           <li

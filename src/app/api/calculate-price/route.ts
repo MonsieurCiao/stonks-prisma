@@ -90,7 +90,7 @@ function generateOrders(count: number, lastAvgPrice: number): Order[] {
   return orders;
 }
 async function calculateOHLC(buyOrders: Order[], sellOrders: Order[], lastAvgPrice: number): Promise<OHLC | null> {
-  const generatedOrders = generateOrders(10, lastAvgPrice);
+  const generatedOrders = generateOrders(100, lastAvgPrice);
   buyOrders = [...buyOrders, ...generatedOrders.filter(o => o.type === 'BUY')];
   sellOrders = [...sellOrders, ...generatedOrders.filter(o => o.type === 'SELL')];
 
@@ -130,7 +130,7 @@ async function calculateOHLC(buyOrders: Order[], sellOrders: Order[], lastAvgPri
       }
       if (sell.quantity === 0 && sell.userId !== "1") {
         await updateOrder(sell.id, sell.userId, tradedQuantity, tradePrice, 'SELL', true);
-      } else if( buy.quantity > 0 && buy.userId !== "1") {
+      } else if( sell.quantity > 0 && sell.userId !== "1") {
         await updateOrder(sell.id, sell.userId, tradedQuantity, tradePrice, 'SELL', false);
       }
 
@@ -195,7 +195,7 @@ export async function GET() {
         low: lastOHLC.low,
         open: lastOHLC.open,
         close: lastOHLC.close,
-        avgPrice: (lastOHLC.open + lastOHLC.close) / 4,
+        avgPrice: (lastOHLC.open + lastOHLC.close) / 2,
       }
     });
     return NextResponse.json({ success: true, lastOHLC });
@@ -209,7 +209,7 @@ export async function GET() {
       low: ohlc.low,
       open: ohlc.open,
       close: ohlc.close,
-      avgPrice: (ohlc.open + ohlc.close) / 4,
+      avgPrice: (ohlc.open + ohlc.close) / 2,
     },
   });
 

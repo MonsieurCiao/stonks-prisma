@@ -3,6 +3,7 @@ import { prisma } from "../../../../lib/prisma";
 import { redirect } from "next/navigation";
 import BuyOrderList from "../_components/OrderList";
 import AddOrder from "../_components/AddOrder";
+import CandleChart from "@/app/_components/CandleChart";
 
 async function deleteUser(formData: FormData) {
   "use server";
@@ -38,6 +39,7 @@ export default async function User({
           delete
         </button>
       </form>
+      <CandleChart />
       <div className="mt-16 text-2xl text-center">
         <h1 className="text-4xl">{curUser.name}</h1>
         <p className="text-lg">Money: ${curUser.money.toFixed(2)}</p>
@@ -45,17 +47,18 @@ export default async function User({
       <div className="mt-8 text-lg">
         <p className="mb-4">Assets:</p>
         <div className="flex items-center justify-center gap-4">
-          {curUser.assets.map((asset) => (
-            <div
-              key={asset.stockSymbol}
-              className="border p-2 rounded-lg bg-gray-100"
-            >
-              <p>
-                {asset.stockSymbol}: {asset.quantity} shares
-              </p>
-              <p>Value: ${(asset.quantity * 5).toFixed(2)}</p>
-            </div>
-          ))}
+          {curUser ? (
+            curUser.assets.map((asset) => (
+              <div key={asset.stockSymbol} className="border p-2 rounded-lg">
+                <p>
+                  {asset.stockSymbol}: {asset.quantity} shares
+                </p>
+                <p>Value: ${(asset.quantity * 5).toFixed(2)}</p>
+              </div>
+            ))
+          ) : (
+            <p>no assets</p>
+          )}
         </div>
       </div>
       <div className="mt-8 text-lg flex justify-between w-full max-w-2xl px-4">

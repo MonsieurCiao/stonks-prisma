@@ -40,7 +40,6 @@ export async function addOrder(prevState: {message:string | null}, formData: For
       },
     });
   }
-
   if(type==="BUY"){
     const totalPrice = quantity * price;
     if (user.money < totalPrice) {

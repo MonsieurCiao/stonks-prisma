@@ -1,6 +1,5 @@
 import React from "react";
 import { prisma } from "../../../../lib/prisma";
-import { redirect } from "next/navigation";
 import BuyOrderList from "../_components/OrderList";
 import AddOrder from "../_components/AddOrder";
 import CandleChart from "@/app/_components/CandleChart";

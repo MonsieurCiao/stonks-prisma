@@ -16,6 +16,10 @@ export default async function User({
       assets: true,
     },
   });
+  const curPrice = await prisma.stockPrice.findFirst({
+    where: { stockSymbol: "GLSCH" },
+    orderBy: { time: "desc" },
+  });
   if (!curUser) {
     return <div>User not found</div>;
   }
@@ -31,11 +35,23 @@ export default async function User({
         <div className="flex items-center justify-center gap-4">
           {curUser ? (
             curUser.assets.map((asset) => (
-              <div key={asset.stockSymbol} className="border p-2 rounded-lg">
+              <div
+                key={asset.stockSymbol}
+                className={`border p-2 rounded-lg ${
+                  curPrice &&
+                  asset.quantity * curPrice.avgPrice - asset.boughtFor > 0
+                    ? "border-green-300"
+                    : "border-gray-300"
+                }`}
+              >
                 <p>
                   {asset.stockSymbol}: {asset.quantity} shares
                 </p>
-                <p>Value: ${(asset.quantity * 5).toFixed(2)}</p>
+                <p>Bought for: ${asset.boughtFor.toFixed(2)}</p>
+                <p>
+                  Value: $
+                  {curPrice && (asset.quantity * curPrice.avgPrice).toFixed(2)}
+                </p>
               </div>
             ))
           ) : (

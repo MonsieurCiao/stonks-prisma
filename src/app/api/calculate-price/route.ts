@@ -77,11 +77,11 @@ async function updateOrder(orderId: string, userId: string, tradedQuantity: numb
 }
 function generateOrders(count: number, lastAvgPrice: number): Order[] {
   const orders: Order[] = [];
-  if (lastAvgPrice <= 0) lastAvgPrice = 5000;
+
   for (let i = 0; i < count; i++) {
     orders.push({
       price: lastAvgPrice + lastAvgPrice * (Math.random() * 2 -1) * 0.05, //last avg price +- 0%<->5%
-      type: Math.random() > 0.5 ? "BUY" : "SELL", 
+      type: Math.random() > 0.35 ? "BUY" : "SELL", 
       quantity: Math.floor(Math.random() * 5) + 1, // quantity between 1 and 5
       userId: "1", //indicates bot
       id: crypto.randomUUID(),
@@ -165,7 +165,7 @@ export async function GET() {
     orderBy: { time: "desc" },
     take: 1,
   });
-  const lastAvgPrice = lastStockTrade !== null ? lastStockTrade.avgPrice : 5;
+  const lastAvgPrice = lastStockTrade !== null ? lastStockTrade.avgPrice : 1000;
   
 
   // 2. Execute order book

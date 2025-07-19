@@ -12,8 +12,8 @@ export default function AddOrderForm({
   const [type, setType] = React.useState<"BUY" | "SELL">("BUY");
   const recommendedPrice =
     type === "BUY"
-      ? lastPrice + lastPrice * 0.03
-      : lastPrice - lastPrice * 0.03;
+      ? lastPrice + lastPrice * 0.02
+      : lastPrice - lastPrice * 0.02;
 
   const [form, formAction] = useActionState(addOrder, {
     message: null,

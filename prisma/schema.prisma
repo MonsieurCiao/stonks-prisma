@@ -17,6 +17,7 @@ model Asset {
   quantity    Float  @default(0)
   userId      String //foreign key
   user        User   @relation(fields: [userId], references: [id])
+  boughtFor   Float  @default(5) //price at which the asset was bought
 
   @@unique([stockSymbol, userId])
 }

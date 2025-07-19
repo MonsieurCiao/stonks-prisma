@@ -5,7 +5,7 @@ import { prisma } from "../../lib/prisma";
 
 export async function addOrder(prevState: {message:string | null}, formData: FormData): Promise<{message:string | null}> {
   const stockSymbol = formData.get("stockSymbol") as "GLSCH";
-  const quantity = parseInt(formData.get("quantity") as string, 10);
+  const quantity = parseFloat(formData.get("quantity") as string);
   const price = parseFloat(formData.get("price") as string);
   const type = formData.get("type") as "BUY" | "SELL";
   const userId = formData.get("userId") as string;

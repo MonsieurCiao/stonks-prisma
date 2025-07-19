@@ -20,7 +20,7 @@ export default function OrderListItem({
     <li
       className={`border ${
         order.type === "SELL" ? "border-red-300" : "border-green-300"
-      } rounded-lg mb-2 p-2 position-relative`}
+      } rounded-lg mb-2 p-2 relative`}
       onMouseEnter={() => setShowCancel(true)}
       onMouseLeave={() => setShowCancel(false)}
     >
@@ -28,7 +28,7 @@ export default function OrderListItem({
       shares at ${order.price.toFixed(2)} each
       <div
         className={`${
-          showCancel ? "absolute top-0 right-0 left-0 bottom-0" : "display-none"
+          showCancel ? "absolute top-0 right-0 bottom-0" : "hidden"
         }`}
       >
         <CancelOrderButton id={order.id} userId={userId} type={order.type} />

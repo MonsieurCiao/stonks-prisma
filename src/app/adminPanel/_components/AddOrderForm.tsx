@@ -1,7 +1,6 @@
 "use client";
 import { addOrder } from "@/actions/actions";
-import React from "react";
-import { useFormState } from "react-dom";
+import React, { useActionState } from "react";
 
 export default function AddOrderForm({
   userId,
@@ -16,7 +15,7 @@ export default function AddOrderForm({
       ? lastPrice + lastPrice * 0.03
       : lastPrice - lastPrice * 0.03;
 
-  const [form, formAction] = useFormState(addOrder, {
+  const [form, formAction] = useActionState(addOrder, {
     message: null,
   });
   return (

@@ -11,7 +11,7 @@ export default function CancelOrderButton({
   type: "BUY" | "SELL";
 }) {
   return (
-    <form action={cancelOrder} className="absolute top-0 right-0 bottom-0">
+    <form action={cancelOrder} className="">
       <input type="hidden" name="orderId" value={id} />
       <input type="hidden" name="userId" value={userId} />
       <input type="hidden" name="type" value={type} />

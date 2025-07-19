@@ -5,14 +5,6 @@ import BuyOrderList from "../_components/OrderList";
 import AddOrder from "../_components/AddOrder";
 import CandleChart from "@/app/_components/CandleChart";
 
-async function deleteUser(formData: FormData) {
-  "use server";
-  const userId = formData.get("userId") as string;
-  await prisma.user.delete({
-    where: { id: userId },
-  });
-  redirect("/adminPanel");
-}
 export default async function User({
   params,
 }: {
@@ -30,15 +22,6 @@ export default async function User({
   }
   return (
     <div className="flex flex-col items-center min-h-screen position-relative">
-      <form className="absolute top-4 right-4" action={deleteUser}>
-        <input type="hidden" name="userId" value={curUser.id} />
-        <button
-          className="p-1 bg-red-500 text-white rounded-lg hover:bg-red-600 cursor-pointer"
-          type="submit"
-        >
-          delete
-        </button>
-      </form>
       <CandleChart />
       <div className="mt-16 text-2xl text-center">
         <h1 className="text-4xl">{curUser.name}</h1>

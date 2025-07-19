@@ -68,6 +68,14 @@ export async function addOrder(prevState: {message:string | null}, formData: For
   revalidatePath(`/adminPanel/${userId}`);
   return {message:"success"}
 }
+export async function deleteUser(formData: FormData) {
+  "use server";
+  const userId = formData.get("userId") as string;
+  await prisma.user.delete({
+    where: { id: userId },
+  });
+  revalidatePath("/adminPanel");
+}
 // export async function cancelOrder(formData: FormData) {
 //   "use server";
 //   const orderId = formData.get("orderId") as string;

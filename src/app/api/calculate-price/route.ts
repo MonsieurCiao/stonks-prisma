@@ -155,13 +155,9 @@ async function calculateOHLC(buyOrders: Order[], sellOrders: Order[], lastAvgPri
 }
 
 export async function GET() {
-  const oneMinuteAgo = new Date(Date.now() - 60 * 1000);
   const orders = await prisma.order.findMany({
     where: {
       stockSymbol: "GLSCH",
-      createdAt: {
-        gte: oneMinuteAgo,
-      },
     },
   });
   const lastStockTrade = await prisma.stockPrice.findFirst({

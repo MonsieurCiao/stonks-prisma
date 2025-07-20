@@ -3,12 +3,26 @@ import { prisma } from "../../../../lib/prisma";
 import AddOrderForm from "./AddOrderForm";
 
 export default async function AddOrder({ userId }: { userId: string }) {
-  const lastTrade = await prisma.stockPrice.findFirst({
-    where: { stockSymbol: "GLSCH" },
-    orderBy: { time: "desc" },
-    take: 1,
-  });
-  const lastPrice = lastTrade ? lastTrade.avgPrice : 5;
+  const [lastTradeGLSCH, lastTradeBNSAI, lastTradeGLDN] = await Promise.all([
+    prisma.stockPrice.findFirst({
+      where: { stockSymbol: "GLSCH" },
+      orderBy: { time: "desc" },
+    }),
+    prisma.stockPrice.findFirst({
+      where: { stockSymbol: "BNSAI" },
+      orderBy: { time: "desc" },
+    }),
+    prisma.stockPrice.findFirst({
+      where: { stockSymbol: "GLDN" },
+      orderBy: { time: "desc" },
+    }),
+  ]);
 
-  return <AddOrderForm userId={userId} lastPrice={lastPrice} />;
+  const lastPrices: Record<string, number> = {
+    GLSCH: lastTradeGLSCH?.avgPrice ?? 5,
+    BNSAI: lastTradeBNSAI?.avgPrice ?? 5,
+    GLDN: lastTradeGLDN?.avgPrice ?? 5,
+  };
+
+  return <AddOrderForm userId={userId} lastPrices={lastPrices} />;
 }

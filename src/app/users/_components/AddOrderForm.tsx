@@ -5,12 +5,15 @@ import { stocks } from "../../../../lib/constants";
 
 export default function AddOrderForm({
   userId,
-  lastPrice,
+  lastPrices,
 }: {
   userId: string;
-  lastPrice: number;
+  lastPrices: Record<string, number>;
 }) {
   const [type, setType] = React.useState<"BUY" | "SELL">("BUY");
+  const [stock, setStock] = React.useState<"GLSCH" | "BNSAI" | "GLDN">("GLSCH");
+
+  const lastPrice = lastPrices[stock];
   const recommendedPrice =
     type === "BUY"
       ? lastPrice + lastPrice * 0.01

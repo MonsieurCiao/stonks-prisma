@@ -42,7 +42,7 @@ export default async function Leaderboard() {
     };
   });
   const sortedUsers = usersWithAssetVal.toSorted((a, b) => {
-    return a.money + a.assetValue - (b.money + b.assetValue);
+    return b.money + b.assetValue - (a.money + a.assetValue);
   });
 
   return (

@@ -33,12 +33,10 @@ export default function StockChartArea({
   if (error) return <div>Error loading data</div>;
 
   return (
-    //need to implement zooming and panning
-    //https://recharts.org/en-US/examples/ZoomableLineChart
     <div className="w-full h-[300px] flex flex-col justify-center items-center gap-4">
       <ResponsiveContainer width="100%" height={"100%"}>
         <LineChart
-          data={data.reverse()}
+          data={data}
           margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
         >
           <CartesianGrid strokeDasharray="3 3" />

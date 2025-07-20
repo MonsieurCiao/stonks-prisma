@@ -47,9 +47,9 @@ export default async function User({
                 <p>
                   {asset.stockSymbol}: {asset.quantity} shares
                 </p>
-                <p>Bought for: ${asset.boughtFor.toFixed(2)}</p>
+                <p>Gekauft für: ${asset.boughtFor.toFixed(2)}</p>
                 <p>
-                  Value: $
+                  Wert: $
                   {curPrice && (asset.quantity * curPrice.avgPrice).toFixed(2)}
                 </p>
               </div>

@@ -5,7 +5,7 @@ import { stocks } from "../../../../lib/constants";
 import StockChartArea from "@/app/_components/StockChartArea";
 
 export default function Charts() {
-  const [stock, setStock] = React.useState(stocks[1]);
+  const [stock, setStock] = React.useState(stocks[0]);
   const [isCandle, setIsCandle] = React.useState(true);
   return (
     <div className="w-full">
@@ -26,7 +26,6 @@ export default function Charts() {
                 | (typeof stocks)[1]
             )
           }
-          defaultValue={stocks[1]}
         >
           <option value={stocks[0]}>Daten von {stocks[0]}</option>
           <option value={stocks[1]}>Daten von {stocks[1]}</option>

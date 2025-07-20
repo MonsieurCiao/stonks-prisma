@@ -1,6 +1,7 @@
 "use client";
 import { addOrder } from "@/actions/actions";
 import React, { useActionState } from "react";
+import { stocks } from "../../../../lib/constants";
 
 export default function AddOrderForm({
   userId,
@@ -12,8 +13,8 @@ export default function AddOrderForm({
   const [type, setType] = React.useState<"BUY" | "SELL">("BUY");
   const recommendedPrice =
     type === "BUY"
-      ? lastPrice + lastPrice * 0.02
-      : lastPrice - lastPrice * 0.02;
+      ? lastPrice + lastPrice * 0.01
+      : lastPrice - lastPrice * 0.01;
 
   const [form, formAction] = useActionState(addOrder, {
     message: null,
@@ -29,7 +30,11 @@ export default function AddOrderForm({
           name="stockSymbol"
           className="border border-border rounded-lg p-2 mb-4 w-full focus:outline-none focus:ring-2 focus:ring-primary-blue"
         >
-          <option value="GLSCH">GLSCH</option>
+          {stocks.map((stock) => (
+            <option key={stock} value={stock}>
+              {stock}
+            </option>
+          ))}
         </select>
         <select
           name="type"

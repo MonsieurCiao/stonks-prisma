@@ -30,7 +30,7 @@ export async function addOrder(prevState: {message:string | null}, formData: For
     if (quantity > assetAmount) {
       return {message: "Not enough stock quantity"};
     }
-    await prisma.asset.update({
+    const updatedAsset = await prisma.asset.update({
       where: {
         userId: userId,
         stockSymbol: stockSymbol,
@@ -39,6 +39,14 @@ export async function addOrder(prevState: {message:string | null}, formData: For
         quantity: { decrement: quantity },
       },
     });
+    if(updatedAsset.quantity === 0){
+      await prisma.asset.delete({
+        where: {
+          userId: userId,
+          stockSymbol: stockSymbol
+        }
+      })
+    }
   }
   if(type==="BUY"){
     const totalPrice = quantity * price;
@@ -135,5 +143,26 @@ export async function createUser(formData: FormData) {
       password,
     },
   });
+  revalidatePath("/adminPanel");
+}
+
+export async function addPost(formData: FormData){
+  "use server";
+  const title = formData.get("title") as string;
+  const content = formData.get("content") as string;
+  const GLSCH = parseFloat(formData.get("GLSCH") as string);
+  const BNSAI = parseFloat(formData.get("BNSAI") as string);
+  const GLDN = parseFloat(formData.get("GLDN") as string);
+  await prisma.newsPost.create({
+    data: {
+      title,
+      content,
+    },
+  });
+  await prisma.priceInfluence.create({
+    data:{
+      influence: [GLSCH, BNSAI, GLDN]
+    }
+  })
   revalidatePath("/adminPanel");
 }

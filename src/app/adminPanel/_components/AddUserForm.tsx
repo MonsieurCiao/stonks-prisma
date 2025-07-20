@@ -4,7 +4,7 @@ import { createUser } from "@/actions/actions";
 export default function AddUserForm() {
   return (
     <form
-      className="flex flex-col items-center mt-8 w-xs max-w-md"
+      className="flex flex-col items-center w-xs max-w-md"
       action={createUser}
     >
       <h2 className="text-2xl mb-4">Add New User</h2>

@@ -21,13 +21,15 @@ export default async function Leaderboard() {
   }
 
   const curPrices: Record<string, number> = {};
-  await stocks.map(async (stock) => {
-    const price = await prisma.stockPrice.findFirst({
-      where: { stockSymbol: stock },
-      orderBy: { time: "desc" },
-    });
-    curPrices[stock] = price?.avgPrice ?? 5;
-  });
+  await Promise.all(
+    stocks.map(async (stock) => {
+      const price = await prisma.stockPrice.findFirst({
+        where: { stockSymbol: stock },
+        orderBy: { time: "desc" },
+      });
+      curPrices[stock] = price?.avgPrice ?? 5;
+    })
+  );
 
   const usersWithAssetVal = users.map((user) => {
     let assetValue = 0;
@@ -56,10 +58,13 @@ export default async function Leaderboard() {
           >
             <div className="flex justify-center gap-10 text-2xl ">
               <span className="">{i + 1}</span> <span>{user.name}</span>{" "}
-              <span className="text-green">{user.money + user.assetValue}</span>
+              <span className="text-green">
+                {(user.money + user.assetValue).toFixed(2)}
+              </span>
             </div>
-            <div className="text-md w-max">
-              GCoins: {user.money} | Asset-Wert: {user.assetValue}
+            <div className="text-md w-full flex justify-center text-center">
+              ₲: {user.money.toFixed(2)} | Asset-Wert:{" "}
+              {user.assetValue.toFixed(2)}
             </div>
           </li>
         ))}

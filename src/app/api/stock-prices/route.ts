@@ -20,11 +20,14 @@ export async function GET(req: Request) {
     take: 50, 
   });
 
+  const reversedPrices = prices.slice().reverse();
+
   // Format to [{ time, price }]
-  const formatted = prices.map((p) => ({
+  const formatted = reversedPrices.map((p) => ({
     time: p.time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     price: Math.round(p.avgPrice*100)/100,
   }));
+
 
   return NextResponse.json(formatted);
 }

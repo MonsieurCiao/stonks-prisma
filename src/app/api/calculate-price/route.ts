@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "../../../../lib/prisma";
 import { stocks } from "../../../../lib/constants";
+import { revalidatePath } from "next/cache";
 
 // THIS IS BASICALLY THE ORDER BOOK
 
@@ -62,8 +63,10 @@ async function updateOrder(orderId: string, userId: string, tradedQuantity: numb
         userId: userId,
         stockSymbol: stockSymbol,
         quantity: tradedQuantity,
+        boughtFor: tradePrice * tradedQuantity
       },
     });
+    revalidatePath(`/users/${userId}`)
   }
   //give user money if he sold
   else if(type === "SELL") {
@@ -75,15 +78,16 @@ async function updateOrder(orderId: string, userId: string, tradedQuantity: numb
         money: { increment: tradePrice* tradedQuantity },
       },
     });
+    revalidatePath(`/users/${userId}`)
   }
 }
-function generateOrders(count: number, lastAvgPrice: number): Order[] {
+function generateOrders(count: number, lastAvgPrice: number, influence: number): Order[] {
   const orders: Order[] = [];
 
   for (let i = 0; i < count; i++) {
     orders.push({
       price: lastAvgPrice + lastAvgPrice * (Math.random() * 2 -1) * 0.05, //last avg price +- 0%<->5%
-      type: Math.random() > 0.47 ? "BUY" : "SELL", 
+      type: Math.random() > influence ? "BUY" : "SELL", 
       quantity: Math.floor(Math.random() * 5) + 1, // quantity between 1 and 5
       userId: "1", //indicates bot
       id: crypto.randomUUID(),
@@ -91,8 +95,8 @@ function generateOrders(count: number, lastAvgPrice: number): Order[] {
   }
   return orders;
 }
-async function calculateOHLC(buyOrders: Order[], sellOrders: Order[], lastAvgPrice: number, stockSymbol:string): Promise<OHLC | null> {
-  const generatedOrders = generateOrders(100, lastAvgPrice);
+async function calculateOHLC(buyOrders: Order[], sellOrders: Order[], lastAvgPrice: number, stockSymbol:string, influence: number): Promise<OHLC | null> {
+  const generatedOrders = generateOrders(100, lastAvgPrice, influence);
   buyOrders = [...buyOrders, ...generatedOrders.filter(o => o.type === 'BUY')];
   sellOrders = [...sellOrders, ...generatedOrders.filter(o => o.type === 'SELL')];
 
@@ -169,7 +173,7 @@ export async function GET() {
 
   // Convert array of [stock, orders] into a Record<string, Order[]>
   const ordersByStock: Record<string, Order[]> = Object.fromEntries(allOrders);
-
+  let i = 0;
   for (const stock of stocks) {
     const stockOrders = ordersByStock[stock] || [];
 
@@ -184,14 +188,25 @@ export async function GET() {
 
     let lastAvgPrice = 0;
     switch(stock){
-      case stocks[0]: lastAvgPrice = lastStockTrade?.avgPrice ?? 200;
-      case stocks[1]: lastAvgPrice = lastStockTrade?.avgPrice ?? 1000;
-      case stocks[2]: lastAvgPrice = lastStockTrade?.avgPrice ?? 5000;
+      case stocks[0]: 
+      lastAvgPrice = lastStockTrade?.avgPrice ?? 1000;
+      break;
+      case stocks[1]: 
+      lastAvgPrice = lastStockTrade?.avgPrice ?? 200;
+      break;
+      case stocks[2]: 
+      lastAvgPrice = lastStockTrade?.avgPrice ?? 5000;
+      break;
     }
+    const influences = await prisma.priceInfluence.findFirst({
+      orderBy: {time: "desc"},
+      take: 1
+    });
+    const influence = influences?.influence[i]?? 0.5;
     
     
 
-    const ohlc = await calculateOHLC(buyOrders, sellOrders, lastAvgPrice, stock);
+    const ohlc = await calculateOHLC(buyOrders, sellOrders, lastAvgPrice, stock, influence);
 
     if (!ohlc) {
       const lastStockPrice = await prisma.stockPrice.findFirst({
@@ -232,6 +247,7 @@ export async function GET() {
         avgPrice: (ohlc.open + ohlc.close) / 2,
       },
     });
+    i++;
   }
   return NextResponse.json({ success: true });
 }

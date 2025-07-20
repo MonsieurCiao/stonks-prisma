@@ -1,6 +1,7 @@
 import Link from "next/link";
 import StockChartArea from "./_components/StockChartArea";
 import { getUserIdFromSession } from "../../lib/session";
+import CandleChart from "./_components/CandleChart";
 
 export default async function Home() {
   const { userId } = await getUserIdFromSession();
@@ -16,7 +17,7 @@ export default async function Home() {
       </div>
       <section className="flex flex-col gap-4 justify-center items-center pt-16">
         <StockChartArea stockSymbol="GLSCH" />
-        {/* <CandleChart /> */}
+        <CandleChart stockSymbol="GLSCH" />
       </section>
     </div>
   );

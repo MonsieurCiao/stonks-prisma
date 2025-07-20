@@ -64,3 +64,18 @@ model StockPrice {
 
   @@map(name: "stock_prices")
 }
+
+model PriceInfluence {
+  id        String   @id @default(cuid())
+  influence Float[]  @default([0.5, 0.5, 0.5])
+  time      DateTime @default(now())
+}
+
+model NewsPost {
+  id      String   @id @default(cuid())
+  time    DateTime @default(now())
+  title   String
+  content String
+
+  @@map(name: "news_post")
+}

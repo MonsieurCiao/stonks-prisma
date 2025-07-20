@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { prisma } from "../../lib/prisma";
+import { cookies } from "next/headers";
 
 export async function signUp(prevState: {message: string | null}, formData: FormData): Promise<{message: string | null}> {
   const name = formData.get("name") as string;
@@ -28,6 +29,9 @@ export async function signUp(prevState: {message: string | null}, formData: Form
       password,
     },
   });
+  //set cookie
+  const cookieStore = await cookies();
+  cookieStore.set('userId', user.id);
   redirect(`/users/${user.id}`);
 }
 export async function login(prevState: {message: string | null},formData: FormData): Promise<{message: string | null}> {
@@ -42,6 +46,8 @@ export async function login(prevState: {message: string | null},formData: FormDa
     return { message: "Passwort oder Email falsch" };
   }
 
-  // Here you would typically set a session or token
+  //set cookie
+  const cookieStore = await cookies();
+  cookieStore.set('userId', user.id);
   redirect(`/users/${user.id}`);
 }

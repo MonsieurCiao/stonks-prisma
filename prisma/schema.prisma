@@ -24,7 +24,7 @@ model Asset {
 
 model User {
   id        String   @id @default(cuid())
-  name      String
+  name      String   @unique
   password  String
   email     String   @unique
   createdAt DateTime @default(now()) @map(name: "created_at")

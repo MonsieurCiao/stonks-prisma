@@ -3,10 +3,24 @@
 import { redirect } from "next/navigation";
 import { prisma } from "../../lib/prisma";
 
-export async function signUp(formData: FormData) {
+export async function signUp(prevState: {message: string | null}, formData: FormData): Promise<{message: string | null}> {
   const name = formData.get("name") as string;
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
+
+  //check
+  const existingUser = await prisma.user.findFirst({
+    where: {
+      OR: [
+        { name },
+        { email }
+      ],
+    },
+  });
+  if (existingUser) {
+    return { message: "Username oder Email existiert bereits" };
+  }
+
   const user = await prisma.user.create({
     data: {
       name,
@@ -17,11 +31,11 @@ export async function signUp(formData: FormData) {
   redirect(`/users/${user.id}`);
 }
 export async function login(prevState: {message: string | null},formData: FormData): Promise<{message: string | null}> {
-  const email = formData.get("email") as string;
+  const name = formData.get("name") as string;
   const password = formData.get("password") as string;
 
   const user = await prisma.user.findUnique({
-    where: { email, password },
+    where: { name, password },
   });
 
   if (!user) {

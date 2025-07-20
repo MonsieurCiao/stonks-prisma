@@ -4,9 +4,14 @@ import AddOrder from "../_components/AddOrder";
 import OrderList from "../_components/OrderList";
 import Charts from "../_components/Charts";
 
-export default async function User({ params }: { params: { userId: string } }) {
+export default async function User({
+  params,
+}: {
+  params: Promise<{ userId: string }>;
+}) {
+  const resolved = await params;
   const curUser = await prisma.user.findUnique({
-    where: { id: params.userId },
+    where: { id: resolved.userId },
     include: {
       assets: true,
     },

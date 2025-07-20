@@ -10,7 +10,7 @@ export default async function UserList() {
       <ul className="list-disc">
         {users.map((user) => (
           <li key={user.id} className="flex py-2 items-center justify-between">
-            <Link href={`/adminPanel/${user.id}`} className="hover:underline">
+            <Link href={`/users/${user.id}`} className="hover:underline">
               <span className="font-bold">{user.name}</span> -{" "}
               {Math.round(user.money * 100) / 100}
             </Link>

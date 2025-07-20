@@ -55,6 +55,7 @@ async function updateOrder(orderId: string, userId: string, tradedQuantity: numb
       },
       update: {
         quantity: { increment: tradedQuantity },
+        boughtFor: {increment: tradePrice * tradedQuantity}
       },
       create: {
         userId: userId,
@@ -81,7 +82,7 @@ function generateOrders(count: number, lastAvgPrice: number): Order[] {
   for (let i = 0; i < count; i++) {
     orders.push({
       price: lastAvgPrice + lastAvgPrice * (Math.random() * 2 -1) * 0.05, //last avg price +- 0%<->5%
-      type: Math.random() > 0.35 ? "BUY" : "SELL", 
+      type: Math.random() > 0.47 ? "BUY" : "SELL", 
       quantity: Math.floor(Math.random() * 5) + 1, // quantity between 1 and 5
       userId: "1", //indicates bot
       id: crypto.randomUUID(),

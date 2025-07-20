@@ -34,6 +34,12 @@ export default function CandleChart() {
   console.log(transformedSeries);
 
   const options: ApexOptions = {
+    tooltip: {
+      style: {
+        fontFamily: "Inter, sans-serif",
+      },
+      theme: "dark",
+    },
     chart: {
       type: "candlestick",
       height: 350,
@@ -44,10 +50,25 @@ export default function CandleChart() {
     },
     xaxis: {
       type: "datetime",
+      tooltip: {
+        enabled: true,
+        formatter(value, opts) {
+          const date = new Date(value);
+          return `${date.toLocaleTimeString()}`;
+        },
+      },
     },
     yaxis: {
       tooltip: {
         enabled: true,
+      },
+    },
+    plotOptions: {
+      candlestick: {
+        colors: {
+          upward: "#8FFBB3",
+          downward: "#DD3559",
+        },
       },
     },
   };

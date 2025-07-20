@@ -26,11 +26,7 @@ export default function OrderListItem({
     >
       <span className="font-bold">{order.stockSymbol}</span> - {order.quantity}{" "}
       shares at ${order.price.toFixed(2)} each
-      <div
-        className={`${
-          showCancel ? "absolute top-0 right-0 bottom-0" : "hidden"
-        }`}
-      >
+      <div className={`${showCancel ? "" : "hidden"}`}>
         <CancelOrderButton id={order.id} userId={userId} type={order.type} />
       </div>
     </li>

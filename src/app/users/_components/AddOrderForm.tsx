@@ -27,13 +27,13 @@ export default function AddOrderForm({
         <input type="hidden" name="userId" value={userId} />
         <select
           name="stockSymbol"
-          className="border border-gray-300 rounded-lg p-2 mb-4 w-full"
+          className="border border-border rounded-lg p-2 mb-4 w-full focus:outline-none focus:ring-2 focus:ring-primary-blue"
         >
           <option value="GLSCH">GLSCH</option>
         </select>
         <select
           name="type"
-          className="border border-gray-300 rounded-lg p-2 mb-4 w-full"
+          className="border border-border rounded-lg p-2 mb-4 w-full focus:outline-none focus:ring-2 focus:ring-primary-blue"
           onChange={(e) => setType(e.target.value as "BUY" | "SELL")}
         >
           <option value="BUY">Buy</option>
@@ -44,7 +44,7 @@ export default function AddOrderForm({
           name="quantity"
           placeholder="Quantity"
           step={0.01}
-          className="border border-gray-300 rounded-lg p-2 mb-4 w-full"
+          className="border border-border rounded-lg p-2 mb-4 w-full focus:outline-none focus:ring-2 focus:ring-primary-blue"
         />
         <label className="mb-2">
           Wir empfehlen einen{" "}
@@ -59,7 +59,7 @@ export default function AddOrderForm({
           type="number"
           name="price"
           defaultValue={Math.round(recommendedPrice * 100) / 100}
-          className="border border-gray-300 rounded-lg p-2 mb-4 w-full"
+          className="border border-border rounded-lg p-2 mb-4 w-full focus:outline-none focus:ring-2 focus:ring-primary-blue"
         />
         {form.message && (
           <p
@@ -74,8 +74,8 @@ export default function AddOrderForm({
         )}
         <button
           type="submit"
-          className="bg-blue-500 text-white rounded-lg p-2
-         w-full hover:bg-blue-600"
+          className="bg-secondary-blue text-white rounded-lg p-2
+         w-full hover:bg-primary-blue cursor-pointer"
         >
           Add Order
         </button>

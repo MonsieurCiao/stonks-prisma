@@ -1,8 +1,8 @@
 import React from "react";
 import { prisma } from "../../../../lib/prisma";
-import BuyOrderList from "../_components/OrderList";
 import AddOrder from "../_components/AddOrder";
 import CandleChart from "@/app/_components/CandleChart";
+import OrderList from "../_components/OrderList";
 
 export default async function User({
   params,
@@ -24,7 +24,7 @@ export default async function User({
     return <div>User not found</div>;
   }
   return (
-    <div className="flex flex-col items-center min-h-screen position-relative">
+    <div className="flex flex-col items-center min-h-screen position-relative p-4">
       <CandleChart />
       <div className="mt-16 text-2xl text-center">
         <h1 className="text-4xl">{curUser.name}</h1>
@@ -37,7 +37,7 @@ export default async function User({
             curUser.assets.map((asset) => (
               <div
                 key={asset.stockSymbol}
-                className={`border p-2 rounded-lg ${
+                className={`border border-border p-2 rounded-lg ${
                   curPrice &&
                   asset.quantity * curPrice.avgPrice - asset.boughtFor > 0
                     ? "border-green-300"
@@ -60,7 +60,7 @@ export default async function User({
         </div>
       </div>
       <div className="mt-8 text-lg flex justify-between w-full max-w-2xl px-4">
-        <BuyOrderList userId={curUser.id} />
+        <OrderList userId={curUser.id} />
         <AddOrder userId={curUser.id} />
       </div>
     </div>

@@ -122,3 +122,18 @@ export async function cancelOrder(formData: FormData) {
   // await deleteOrder(orderId, userId, tradedQuantity, type);
   revalidatePath(`/adminPanel/${userId}`);
 }
+
+export async function createUser(formData: FormData) {
+  "use server";
+  const name = formData.get("name") as string;
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+  await prisma.user.create({
+    data: {
+      name,
+      email,
+      password,
+    },
+  });
+  revalidatePath("/adminPanel");
+}

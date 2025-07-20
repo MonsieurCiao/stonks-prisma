@@ -25,6 +25,8 @@ model Asset {
 model User {
   id        String   @id @default(cuid())
   name      String
+  password  String
+  email     String   @unique
   createdAt DateTime @default(now()) @map(name: "created_at")
   orders    Order[]
   money     Float    @default(5000)

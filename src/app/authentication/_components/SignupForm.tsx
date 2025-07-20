@@ -1,19 +1,12 @@
-import { revalidatePath } from "next/cache";
 import React from "react";
-import { prisma } from "../../../../lib/prisma";
-import { createUser } from "@/actions/actions";
 
-export default function AddUserForm() {
+export default function SignupForm() {
   return (
-    <form
-      className="flex flex-col items-center mt-8 w-xs max-w-md"
-      action={createUser}
-    >
-      <h2 className="text-2xl mb-4">Add New User</h2>
+    <form className="">
       <input
         type="text"
         name="name"
-        placeholder="Nickname"
+        placeholder="Username"
         className="border border-border focus:outline-none focus:ring-2 focus:ring-primary-blue rounded-lg p-2 mb-4 w-full"
       />
       <input
@@ -23,7 +16,7 @@ export default function AddUserForm() {
         className="border border-border focus:outline-none focus:ring-2 focus:ring-primary-blue rounded-lg p-2 mb-4 w-full"
       />
       <input
-        type="text"
+        type="password"
         name="password"
         placeholder="Password"
         className="border border-border focus:outline-none focus:ring-2 focus:ring-primary-blue rounded-lg p-2 mb-4 w-full"
@@ -32,7 +25,7 @@ export default function AddUserForm() {
         type="submit"
         className="bg-secondary-blue rounded-lg p-2 w-full hover:bg-primary-blue transition-colors duration-200 cursor-pointer"
       >
-        Add User
+        Submit
       </button>
     </form>
   );

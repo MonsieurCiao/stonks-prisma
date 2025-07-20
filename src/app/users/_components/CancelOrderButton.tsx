@@ -15,8 +15,8 @@ export default function CancelOrderButton({
       <input type="hidden" name="orderId" value={id} />
       <input type="hidden" name="userId" value={userId} />
       <input type="hidden" name="type" value={type} />
-      <button className="p-1 bg-red-500 text-white rounded-lg hover:bg-red-200 cursor-pointer ">
-        C
+      <button className="p-1 bg-border  rounded-lg hover:bg-red cursor-pointer w-full ">
+        Auftrag stornieren
       </button>
     </form>
   );

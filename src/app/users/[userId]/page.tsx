@@ -1,8 +1,8 @@
 import React from "react";
 import { prisma } from "../../../../lib/prisma";
 import AddOrder from "../_components/AddOrder";
-import CandleChart from "@/app/_components/CandleChart";
 import OrderList from "../_components/OrderList";
+import Charts from "../_components/Charts";
 
 export default async function User({
   params,
@@ -25,15 +25,15 @@ export default async function User({
   }
   return (
     <div className="flex flex-col items-center min-h-screen position-relative p-4">
-      <CandleChart />
-      <div className="mt-16 text-2xl text-center">
+      <Charts />
+      <div className="mt-10 text-2xl text-center">
         <h1 className="text-4xl">{curUser.name}</h1>
-        <p className="text-lg">Money: ${curUser.money.toFixed(2)}</p>
       </div>
-      <div className="mt-8 text-lg">
-        <p className="mb-4">Assets:</p>
+      <div className="mt-8 text-lg text-center border-2 border-border rounded-lg px-8 py-4">
+        <p className="text-2xl mb-4">{curUser.money.toFixed(2)}</p>
+        <p className="mb-1">Assets:</p>
         <div className="flex items-center justify-center gap-4">
-          {curUser ? (
+          {curUser && curUser.assets.length !== 0 ? (
             curUser.assets.map((asset) => (
               <div
                 key={asset.stockSymbol}
@@ -55,13 +55,13 @@ export default async function User({
               </div>
             ))
           ) : (
-            <p>no assets</p>
+            <p>- no assets -</p>
           )}
         </div>
       </div>
-      <div className="mt-8 text-lg flex justify-between w-full max-w-2xl px-4">
-        <OrderList userId={curUser.id} />
+      <div className="mt-12 text-lg flex flex-col md:flex-row justify-center items-center gap-10 md:gap-4 md:items-start md:justify-between w-full max-w-2xl px-4">
         <AddOrder userId={curUser.id} />
+        <OrderList userId={curUser.id} />
       </div>
     </div>
   );

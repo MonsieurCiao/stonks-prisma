@@ -2,10 +2,17 @@
 import { prisma } from "../../../../lib/prisma";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const {searchParams} = new URL(req.url);
+  const symbol = searchParams.get("symbol");
+
+  if(!symbol){
+    return new Response("Missing symbol", {status: 400});
+  }
+
   const prices = await prisma.stockPrice.findMany({
     where: {
-      stockSymbol: "GLSCH",
+      stockSymbol: symbol,
     },
     orderBy: {
       time: "desc",

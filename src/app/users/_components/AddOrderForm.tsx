@@ -21,7 +21,7 @@ export default function AddOrderForm({
   return (
     <div>
       <form
-        className="flex flex-col items-center mt-8 w-xs max-w-md"
+        className="flex flex-col items-center w-xs max-w-md"
         action={formAction}
       >
         <input type="hidden" name="userId" value={userId} />

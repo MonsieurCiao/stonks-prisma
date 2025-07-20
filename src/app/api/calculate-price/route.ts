@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "../../../../lib/prisma";
+import { stocks } from "../../../../lib/constants";
 
 // THIS IS BASICALLY THE ORDER BOOK
 
@@ -23,7 +24,7 @@ type OHLC = {
   low: number;
   close: number;
 };
-async function updateOrder(orderId: string, userId: string, tradedQuantity: number, tradePrice: number, type: "BUY" | "SELL", deleteOrder: boolean) {
+async function updateOrder(orderId: string, userId: string, tradedQuantity: number, tradePrice: number, type: "BUY" | "SELL", deleteOrder: boolean, stockSymbol: string) {
   if (deleteOrder) {
     await prisma.order.delete({
       where: {
@@ -51,7 +52,7 @@ async function updateOrder(orderId: string, userId: string, tradedQuantity: numb
     await prisma.asset.upsert({
       where: {
         userId: userId,
-        stockSymbol: "GLSCH",
+        stockSymbol: stockSymbol,
       },
       update: {
         quantity: { increment: tradedQuantity },
@@ -59,7 +60,7 @@ async function updateOrder(orderId: string, userId: string, tradedQuantity: numb
       },
       create: {
         userId: userId,
-        stockSymbol: "GLSCH",
+        stockSymbol: stockSymbol,
         quantity: tradedQuantity,
       },
     });
@@ -90,7 +91,7 @@ function generateOrders(count: number, lastAvgPrice: number): Order[] {
   }
   return orders;
 }
-async function calculateOHLC(buyOrders: Order[], sellOrders: Order[], lastAvgPrice: number): Promise<OHLC | null> {
+async function calculateOHLC(buyOrders: Order[], sellOrders: Order[], lastAvgPrice: number, stockSymbol:string): Promise<OHLC | null> {
   const generatedOrders = generateOrders(100, lastAvgPrice);
   buyOrders = [...buyOrders, ...generatedOrders.filter(o => o.type === 'BUY')];
   sellOrders = [...sellOrders, ...generatedOrders.filter(o => o.type === 'SELL')];
@@ -125,14 +126,14 @@ async function calculateOHLC(buyOrders: Order[], sellOrders: Order[], lastAvgPri
 
       //update orders
       if (buy.quantity === 0 && buy.userId !== "1") {
-        await updateOrder(buy.id, buy.userId, tradedQuantity, tradePrice, 'BUY', true);
+        await updateOrder(buy.id, buy.userId, tradedQuantity, tradePrice, 'BUY', true, stockSymbol);
       } else if( buy.quantity > 0 && buy.userId !== "1") {
-        await updateOrder(buy.id, buy.userId, tradedQuantity, tradePrice, 'BUY', false);
+        await updateOrder(buy.id, buy.userId, tradedQuantity, tradePrice, 'BUY', false, stockSymbol);
       }
       if (sell.quantity === 0 && sell.userId !== "1") {
-        await updateOrder(sell.id, sell.userId, tradedQuantity, tradePrice, 'SELL', true);
+        await updateOrder(sell.id, sell.userId, tradedQuantity, tradePrice, 'SELL', true, stockSymbol);
       } else if( sell.quantity > 0 && sell.userId !== "1") {
-        await updateOrder(sell.id, sell.userId, tradedQuantity, tradePrice, 'SELL', false);
+        await updateOrder(sell.id, sell.userId, tradedQuantity, tradePrice, 'SELL', false, stockSymbol);
       }
 
       if (buy.quantity === 0) buyIndex++;
@@ -156,59 +157,81 @@ async function calculateOHLC(buyOrders: Order[], sellOrders: Order[], lastAvgPri
 }
 
 export async function GET() {
-  const orders = await prisma.order.findMany({
-    where: {
-      stockSymbol: "GLSCH",
-    },
-  });
-  const lastStockTrade = await prisma.stockPrice.findFirst({
-    where: { stockSymbol: "GLSCH" },
-    orderBy: { time: "desc" },
-    take: 1,
-  });
-  const lastAvgPrice = lastStockTrade !== null ? lastStockTrade.avgPrice : 1000;
-  
+  // Fetch orders for each stock
+  const allOrders = await Promise.all(
+    stocks.map(async (stock) => {
+      const stockOrders = await prisma.order.findMany({
+        where: { stockSymbol: stock },
+      });
+      return [stock, stockOrders] as const;
+    })
+  );
 
-  // 2. Execute order book
-  const buyOrders = orders.filter(o => o.type === 'BUY');
-  const sellOrders = orders.filter(o => o.type === 'SELL');
-  const ohlc = await calculateOHLC(buyOrders, sellOrders, lastAvgPrice);
-  if (ohlc === null) {
-    const lastStockPrice = await prisma.stockPrice.findFirst({
-      where: { stockSymbol: "GLSCH" },
+  // Convert array of [stock, orders] into a Record<string, Order[]>
+  const ordersByStock: Record<string, Order[]> = Object.fromEntries(allOrders);
+
+  for (const stock of stocks) {
+    const stockOrders = ordersByStock[stock] || [];
+
+    const buyOrders = stockOrders.filter(o => o.type === 'BUY');
+    const sellOrders = stockOrders.filter(o => o.type === 'SELL');
+
+    const lastStockTrade = await prisma.stockPrice.findFirst({
+      where: { stockSymbol: stock },
       orderBy: { time: "desc" },
       take: 1,
     });
-    const lastOHLC ={
-      open: lastStockPrice?.open || 0,
-      high: lastStockPrice?.high || 0,
-      low: lastStockPrice?.low || 0,
-      close: lastStockPrice?.close || 0,
+
+    let lastAvgPrice = 0;
+    switch(stock){
+      case stocks[0]: lastAvgPrice = lastStockTrade?.avgPrice ?? 200;
+      case stocks[1]: lastAvgPrice = lastStockTrade?.avgPrice ?? 1000;
+      case stocks[2]: lastAvgPrice = lastStockTrade?.avgPrice ?? 5000;
     }
+    
+    
+
+    const ohlc = await calculateOHLC(buyOrders, sellOrders, lastAvgPrice, stock);
+
+    if (!ohlc) {
+      const lastStockPrice = await prisma.stockPrice.findFirst({
+        where: { stockSymbol: stock },
+        orderBy: { time: "desc" },
+        take: 1,
+      });
+
+      const lastOHLC = {
+        open: lastStockPrice?.open || 0,
+        high: lastStockPrice?.high || 0,
+        low: lastStockPrice?.low || 0,
+        close: lastStockPrice?.close || 0,
+      };
+
+      await prisma.stockPrice.create({
+        data: {
+          stockSymbol: stock,
+          high: lastOHLC.high,
+          low: lastOHLC.low,
+          open: lastOHLC.open,
+          close: lastOHLC.close,
+          avgPrice: (lastOHLC.open + lastOHLC.close) / 2,
+        },
+      });
+
+      continue; // skip to next stock
+    }
+
+    // Store new OHLC in DB
     await prisma.stockPrice.create({
       data: {
-        stockSymbol: "GLSCH",
-        high: lastOHLC.high,
-        low: lastOHLC.low,
-        open: lastOHLC.open,
-        close: lastOHLC.close,
-        avgPrice: (lastOHLC.open + lastOHLC.close) / 2,
-      }
+        stockSymbol: stock,
+        high: ohlc.high,
+        low: ohlc.low,
+        open: ohlc.open,
+        close: ohlc.close,
+        avgPrice: (ohlc.open + ohlc.close) / 2,
+      },
     });
-    return NextResponse.json({ success: true, lastOHLC });
   }
-
-  // 3. Store new price in DB
-  await prisma.stockPrice.create({
-    data: {
-      stockSymbol: "GLSCH", 
-      high: ohlc.high,
-      low: ohlc.low,
-      open: ohlc.open,
-      close: ohlc.close,
-      avgPrice: (ohlc.open + ohlc.close) / 2,
-    },
-  });
-
-  return NextResponse.json({ success: true, ohlc });
+  return NextResponse.json({ success: true });
 }

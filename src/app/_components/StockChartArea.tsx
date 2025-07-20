@@ -13,8 +13,13 @@ import useSWR from "swr";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-export default function StockChartArea() {
-  const { data, error, isLoading } = useSWR("/api/stock-prices", fetcher, {
+export default function StockChartArea({
+  stockSymbol,
+}: {
+  stockSymbol: string;
+}) {
+  const url = `/api/stock-prices?symbol=${stockSymbol}`;
+  const { data, error, isLoading } = useSWR(url, fetcher, {
     refreshInterval: 60_000, // 60 seconds
   });
 
@@ -32,17 +37,17 @@ export default function StockChartArea() {
     //https://recharts.org/en-US/examples/ZoomableLineChart
     <div className="w-full h-[300px] flex flex-col justify-center items-center gap-4">
       <ResponsiveContainer width="100%" height={"100%"}>
-      <LineChart
-        data={data.reverse()}
-        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="time" />
-        <YAxis domain={[lowestPoint, highestPoint]} />
-        <Tooltip />
-        <Legend />
-        <Line type="monotone" dataKey="price" stroke="#8884d8" />
-      </LineChart>
+        <LineChart
+          data={data.reverse()}
+          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="time" />
+          <YAxis domain={[lowestPoint, highestPoint]} />
+          <Tooltip />
+          <Legend />
+          <Line type="monotone" dataKey="price" stroke="#8884d8" />
+        </LineChart>
       </ResponsiveContainer>
     </div>
   );

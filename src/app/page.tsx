@@ -15,7 +15,7 @@ export default async function Home() {
         </Link>
       </div>
       <section className="flex flex-col gap-4 justify-center items-center pt-16">
-        <StockChartArea />
+        <StockChartArea stockSymbol="GLSCH" />
         {/* <CandleChart /> */}
       </section>
     </div>

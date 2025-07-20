@@ -9,6 +9,7 @@
   --secondary-blue: #4F8DBC;
   --border: #4A5057;
   --red: #DD3559;
+  --green: #8FFBB3;
   /* --secondary: #b7c79f; */
   --accent: #8cb987;
 }
@@ -19,6 +20,7 @@
   --color-primary-blue: var(--primary-blue);
   --color-secondary-blue: var(--secondary-blue);
   --color-red: var(--red);
+  --color-green: var(--green);
   --color-accent: var(--accent);
   --color-border: var(--border);
   --font-sans: var(--font-geist-sans);

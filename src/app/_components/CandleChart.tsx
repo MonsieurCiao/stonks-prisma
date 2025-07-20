@@ -6,8 +6,9 @@ import { ApexOptions } from "apexcharts";
 const ApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-export default function CandleChart() {
-  const { data, error, isLoading } = useSWR("/api/stock-ohlc", fetcher, {
+export default function CandleChart({ stockSymbol }: { stockSymbol: string }) {
+  const url = `/api/stock-ohlc?symbol=${stockSymbol}`;
+  const { data, error, isLoading } = useSWR(url, fetcher, {
     refreshInterval: 60_000, // every 60 seconds
   });
 
@@ -45,7 +46,7 @@ export default function CandleChart() {
       height: 350,
     },
     title: {
-      text: "Stock Candle Chart (GLSCH)",
+      text: `Stock Candle Chart (${stockSymbol})`,
       align: "left",
     },
     xaxis: {

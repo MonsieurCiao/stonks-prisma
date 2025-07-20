@@ -1,0 +1,1 @@
+export const stocks: string[] = ['GLSCH', 'BNSAI', 'GLDN'];

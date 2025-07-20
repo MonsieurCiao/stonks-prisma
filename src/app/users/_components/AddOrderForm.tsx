@@ -32,6 +32,9 @@ export default function AddOrderForm({
         <select
           name="stockSymbol"
           className="border border-border rounded-lg p-2 mb-4 w-full focus:outline-none focus:ring-2 focus:ring-primary-blue"
+          onChange={(e) =>
+            setStock(e.target.value as "GLSCH" | "BNSAI" | "GLDN")
+          }
         >
           {stocks.map((stock) => (
             <option key={stock} value={stock}>

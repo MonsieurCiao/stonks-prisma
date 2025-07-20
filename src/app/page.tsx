@@ -1,5 +1,4 @@
 import Link from "next/link";
-import CandleChart from "./_components/CandleChart";
 import StockChartArea from "./_components/StockChartArea";
 
 export default function Home() {

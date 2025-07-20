@@ -1,6 +1,4 @@
-import { revalidatePath } from "next/cache";
 import React from "react";
-import { prisma } from "../../../../lib/prisma";
 import { createUser } from "@/actions/actions";
 
 export default function AddUserForm() {

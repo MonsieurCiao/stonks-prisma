@@ -1,8 +1,9 @@
+import { signUp } from "@/actions/authActions";
 import React from "react";
 
 export default function SignupForm() {
   return (
-    <form className="">
+    <form className="" action={signUp}>
       <input
         type="text"
         name="name"

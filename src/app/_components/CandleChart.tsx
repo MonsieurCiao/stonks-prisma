@@ -52,7 +52,7 @@ export default function CandleChart() {
       type: "datetime",
       tooltip: {
         enabled: true,
-        formatter(value, opts) {
+        formatter(value) {
           const date = new Date(value);
           return `${date.toLocaleTimeString()}`;
         },

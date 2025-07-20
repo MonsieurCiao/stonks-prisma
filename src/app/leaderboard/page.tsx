@@ -20,7 +20,7 @@ export default async function Leaderboard() {
     );
   }
 
-  let curPrices: Record<string, number> = {};
+  const curPrices: Record<string, number> = {};
   await stocks.map(async (stock) => {
     const price = await prisma.stockPrice.findFirst({
       where: { stockSymbol: stock },
@@ -50,7 +50,9 @@ export default async function Leaderboard() {
         {sortedUsers.map((user, i) => (
           <li
             key={user.id}
-            className="border-2 border-border rounded-lg w-full px-12 py-2 "
+            className={`border-2 ${
+              user.id === userId ? "border-green" : "border-border"
+            } rounded-lg w-full px-12 py-2 `}
           >
             <div className="flex justify-center gap-10 text-2xl ">
               <span className="">{i + 1}</span> <span>{user.name}</span>{" "}

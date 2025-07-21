@@ -1,8 +1,5 @@
 import React from "react";
 import { prisma } from "../../../../lib/prisma";
-import AddOrder from "../_components/AddOrder";
-import OrderList from "../_components/OrderList";
-import Charts from "../_components/Charts";
 import PageContainer from "../_components/PageContainer";
 
 export default async function User({

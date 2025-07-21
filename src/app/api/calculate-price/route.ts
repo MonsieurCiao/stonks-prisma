@@ -49,28 +49,31 @@ async function updateOrder(orderId: string, userId: string, tradedQuantity: numb
   // this is where the money and assets are transferred
 
   //give user asset if he bought
-  if(type === "BUY") {
-    await prisma.asset.upsert({
-      where: {
-        // userId: userId,
-        // stockSymbol: stockSymbol,
-        stockSymbol_userId:{
+  if(type === "BUY" && userId !== "1") {
+    try{
+      await prisma.asset.upsert({
+        where: {
+          // userId: userId,
+          // stockSymbol: stockSymbol,
+          stockSymbol_userId:{
+            stockSymbol: stockSymbol,
+            userId: userId
+          }
+        },
+        update: {
+          quantity: { increment: tradedQuantity },
+          boughtFor: {increment: tradePrice * tradedQuantity}
+        },
+        create: {
           stockSymbol: stockSymbol,
-          userId: userId
-        }
-      },
-      update: {
-        quantity: { increment: tradedQuantity },
-        boughtFor: {increment: tradePrice * tradedQuantity}
-      },
-      create: {
-        stockSymbol: stockSymbol,
-        quantity: tradedQuantity,
-        userId: userId,
-        boughtFor: tradePrice * tradedQuantity
-      },
-    });
-    revalidatePath(`/users/${userId}`)
+          quantity: tradedQuantity,
+          userId: userId,
+          boughtFor: tradePrice * tradedQuantity
+        },
+      });
+    }catch(err){
+      console.error("Failed upsert", { userId, stockSymbol, err })
+    }
   }
   //give user money if he sold
   else if(type === "SELL") {
@@ -82,8 +85,8 @@ async function updateOrder(orderId: string, userId: string, tradedQuantity: numb
         money: { increment: tradePrice* tradedQuantity },
       },
     });
-    revalidatePath(`/users/${userId}`)
   }
+  revalidatePath(`/users/${userId}`)
 }
 function generateOrders(count: number, lastAvgPrice: number, influence: number): Order[] {
   const orders: Order[] = [];

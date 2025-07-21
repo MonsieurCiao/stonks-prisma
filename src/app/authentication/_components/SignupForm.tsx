@@ -12,6 +12,7 @@ export default function SignupForm() {
         name="name"
         placeholder="Username"
         className="border border-border focus:outline-none focus:ring-2 focus:ring-primary-blue rounded-lg p-2 mb-4 w-full"
+        maxLength={30}
       />
       <input
         type="email"

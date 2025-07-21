@@ -83,14 +83,7 @@ export async function addOrder(prevState: {message:string | null}, formData: For
   revalidatePath(`/adminPanel/${userId}`);
   return {message:"success"}
 }
-export async function deleteUser(formData: FormData) {
-  "use server";
-  const userId = formData.get("userId") as string;
-  await prisma.user.delete({
-    where: { id: userId },
-  });
-  revalidatePath("/adminPanel");
-}
+
 export async function cancelOrder(formData: FormData) {
   const orderId = formData.get("orderId") as string;
   const userId = formData.get("userId") as string;
@@ -174,4 +167,45 @@ export async function addPost(formData: FormData){
     }
   })
   revalidatePath("/adminPanel");
+}
+export async function deleteAllPrices(prevState: {message:string | null},formData: FormData): Promise<{message: string | null}>{
+  "use server"
+  const password = formData.get("password") as string;
+  if(password!== "zebrastreifen") return {message: "invalid key"};
+  
+  prisma.stockPrice.deleteMany();
+
+  return {message: "success"}
+}
+export async function deleteUser(prevState: {message:string | null},formData: FormData): Promise<{message: string | null}>{
+  "use server"
+  const userId = formData.get("userId") as string;
+  
+  try{
+    await prisma.user.delete({
+      where: {id: userId}
+    });
+  }catch(err){
+    return {message: "user not found"}
+  }
+  revalidatePath('/adminPanel');
+  return {message: "success"}
+}
+export async function modifyMoney(prevState: {message:string | null},formData: FormData): Promise<{message: string | null}>{
+  "use server"
+  const userId = formData.get("userId") as string;
+  const money = parseFloat(formData.get("money") as string);
+  
+  try{
+    await prisma.user.update({
+      where: {id: userId},
+      data:{
+        money: {increment: money}
+      }
+    });
+  }catch(err){
+    return {message: "something went wrong"}
+  }
+  revalidatePath('/adminPanel');
+  return {message: "success"}
 }

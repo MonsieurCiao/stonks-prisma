@@ -54,7 +54,7 @@ export default async function User({
           {curUser.assets.length > 0 ? (
             curUser.assets.map((asset) => {
               const price = priceMap[asset.stockSymbol] ?? 5;
-              const currentValue = asset.quantity * price;
+              const currentValue = price;
               const profit = currentValue - asset.boughtFor;
               return (
                 <div

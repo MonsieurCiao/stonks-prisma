@@ -66,7 +66,7 @@ async function updateOrder(orderId: string, userId: string, tradedQuantity: numb
           stockSymbol: stockSymbol,
           quantity: tradedQuantity,
           userId: userId,
-          boughtFor: tradePrice * tradedQuantity
+          boughtFor: tradePrice
         },
       });
     }catch(err){

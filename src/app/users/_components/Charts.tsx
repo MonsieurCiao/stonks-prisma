@@ -4,26 +4,23 @@ import React from "react";
 import { stocks, StockSymbol } from "../../../../lib/constants";
 import StockChartArea from "@/app/_components/StockChartArea";
 
-export default function Charts({
-  sharedStock,
-  setSharedStock,
-}: {
-  sharedStock: StockSymbol;
-  setSharedStock: React.Dispatch<React.SetStateAction<StockSymbol>>;
-}) {
+export default function Charts() {
   const [isCandle, setIsCandle] = React.useState(true);
+  const [stock, setStock] = React.useState<"GLSCH" | "BNSAI" | "GLDN">(
+    stocks[0]
+  );
   return (
     <div className="w-full">
       {isCandle ? (
-        <CandleChart stockSymbol={sharedStock} />
+        <CandleChart stockSymbol={stock} />
       ) : (
-        <StockChartArea stockSymbol={sharedStock} />
+        <StockChartArea stockSymbol={stock} />
       )}
       <div className="flex gap-10 justify-end">
         <select
           name="type"
           className="border border-border rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-primary-blue"
-          onChange={(e) => setSharedStock(e.target.value as StockSymbol)}
+          onChange={(e) => setStock(e.target.value as StockSymbol)}
         >
           <option value={stocks[0]}>Daten von {stocks[0]}</option>
           <option value={stocks[1]}>Daten von {stocks[1]}</option>

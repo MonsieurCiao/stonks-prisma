@@ -6,17 +6,14 @@ import { stocks, StockSymbol } from "../../../../lib/constants";
 export default function AddOrderForm({
   userId,
   lastPrices,
-  sharedStock,
-  setSharedStock,
 }: {
   userId: string;
   lastPrices: Record<string, number>;
-  sharedStock: StockSymbol;
-  setSharedStock: React.Dispatch<React.SetStateAction<StockSymbol>>;
 }) {
   const [type, setType] = React.useState<"BUY" | "SELL">("BUY");
+  const [stock, setStock] = React.useState<StockSymbol>(stocks[0]);
 
-  const lastPrice = lastPrices[sharedStock];
+  const lastPrice = lastPrices[stock];
   const recommendedPrice =
     type === "BUY"
       ? lastPrice + lastPrice * 0.01
@@ -35,9 +32,7 @@ export default function AddOrderForm({
         <select
           name="stockSymbol"
           className="border border-border rounded-lg p-2 mb-4 w-full focus:outline-none focus:ring-2 focus:ring-primary-blue"
-          onChange={(e) =>
-            setSharedStock(e.target.value as "GLSCH" | "BNSAI" | "GLDN")
-          }
+          onChange={(e) => setStock(e.target.value as StockSymbol)}
         >
           {stocks.map((stock) => (
             <option key={stock} value={stock}>

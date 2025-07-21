@@ -4,15 +4,7 @@ import { prisma } from "../../../../lib/prisma";
 import AddOrderForm from "./AddOrderForm";
 import { StockSymbol } from "../../../../lib/constants";
 
-export default async function AddOrder({
-  userId,
-  sharedStock,
-  setSharedStock,
-}: {
-  userId: string;
-  sharedStock: StockSymbol;
-  setSharedStock: React.Dispatch<React.SetStateAction<StockSymbol>>;
-}) {
+export default async function AddOrder({ userId }: { userId: string }) {
   const [lastTradeGLSCH, lastTradeBNSAI, lastTradeGLDN] = await Promise.all([
     prisma.stockPrice.findFirst({
       where: { stockSymbol: "GLSCH" },
@@ -34,12 +26,5 @@ export default async function AddOrder({
     GLDN: lastTradeGLDN?.avgPrice ?? 5,
   };
 
-  return (
-    <AddOrderForm
-      userId={userId}
-      lastPrices={lastPrices}
-      sharedStock={sharedStock}
-      setSharedStock={setSharedStock}
-    />
-  );
+  return <AddOrderForm userId={userId} lastPrices={lastPrices} />;
 }

@@ -1,3 +1,4 @@
+"use server";
 import React from "react";
 import { prisma } from "../../../../lib/prisma";
 import PageContainer from "../_components/PageContainer";

@@ -3,7 +3,7 @@ import React from "react";
 import Charts from "./Charts";
 import AddOrder from "./AddOrder";
 import OrderList from "./OrderList";
-import { stocks } from "../../../../lib/constants";
+import { stocks, StockSymbol } from "../../../../lib/constants";
 
 export default function PageContainer({
   curUser,
@@ -17,7 +17,7 @@ export default function PageContainer({
   };
   priceMap: Record<string, number>;
 }) {
-  const [sharedStock, setSharedStock] = React.useState(stocks[0]);
+  const [sharedStock, setSharedStock] = React.useState<StockSymbol>(stocks[0]);
 
   return (
     <div className="flex flex-col items-center min-h-screen position-relative p-4">

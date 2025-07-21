@@ -1,7 +1,7 @@
 "use client";
 import { addOrder } from "@/actions/actions";
 import React, { useActionState } from "react";
-import { stocks } from "../../../../lib/constants";
+import { stocks, StockSymbol } from "../../../../lib/constants";
 
 export default function AddOrderForm({
   userId,
@@ -11,8 +11,8 @@ export default function AddOrderForm({
 }: {
   userId: string;
   lastPrices: Record<string, number>;
-  sharedStock: string;
-  setSharedStock: (stock: string) => void;
+  sharedStock: StockSymbol;
+  setSharedStock: React.Dispatch<React.SetStateAction<StockSymbol>>;
 }) {
   const [type, setType] = React.useState<"BUY" | "SELL">("BUY");
 

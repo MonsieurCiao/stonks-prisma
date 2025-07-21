@@ -1,3 +1,4 @@
+"use server";
 import React from "react";
 import { prisma } from "../../../../lib/prisma";
 import OrderListItem from "./OrderListItem";

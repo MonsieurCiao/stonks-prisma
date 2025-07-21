@@ -1,15 +1,15 @@
 "use client";
 import CandleChart from "@/app/_components/CandleChart";
 import React from "react";
-import { stocks } from "../../../../lib/constants";
+import { stocks, StockSymbol } from "../../../../lib/constants";
 import StockChartArea from "@/app/_components/StockChartArea";
 
 export default function Charts({
   sharedStock,
   setSharedStock,
 }: {
-  sharedStock: string;
-  setSharedStock: (stock: string) => void;
+  sharedStock: StockSymbol;
+  setSharedStock: React.Dispatch<React.SetStateAction<StockSymbol>>;
 }) {
   const [isCandle, setIsCandle] = React.useState(true);
   return (
@@ -23,14 +23,7 @@ export default function Charts({
         <select
           name="type"
           className="border border-border rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-primary-blue"
-          onChange={(e) =>
-            setSharedStock(
-              e.target.value as
-                | (typeof stocks)[0]
-                | (typeof stocks)[1]
-                | (typeof stocks)[1]
-            )
-          }
+          onChange={(e) => setSharedStock(e.target.value as StockSymbol)}
         >
           <option value={stocks[0]}>Daten von {stocks[0]}</option>
           <option value={stocks[1]}>Daten von {stocks[1]}</option>

@@ -1,6 +1,8 @@
+"use server";
 import React from "react";
 import { prisma } from "../../../../lib/prisma";
 import AddOrderForm from "./AddOrderForm";
+import { StockSymbol } from "../../../../lib/constants";
 
 export default async function AddOrder({
   userId,
@@ -8,8 +10,8 @@ export default async function AddOrder({
   setSharedStock,
 }: {
   userId: string;
-  sharedStock: string;
-  setSharedStock: (stock: string) => void;
+  sharedStock: StockSymbol;
+  setSharedStock: React.Dispatch<React.SetStateAction<StockSymbol>>;
 }) {
   const [lastTradeGLSCH, lastTradeBNSAI, lastTradeGLDN] = await Promise.all([
     prisma.stockPrice.findFirst({

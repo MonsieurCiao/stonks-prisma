@@ -90,9 +90,10 @@ function generateOrders(count: number, lastAvgPrice: number, influence: number):
   const orders: Order[] = [];
 
   for (let i = 0; i < count; i++) {
+    const type = Math.random() > influence ? "BUY" : "SELL";
     orders.push({
-      price: lastAvgPrice + lastAvgPrice * (Math.random() * 2 -1) * 0.05, //last avg price +- 0%<->5%
-      type: Math.random() > influence ? "BUY" : "SELL", 
+      type: type,
+      price: type==="BUY"?lastAvgPrice + lastAvgPrice * Math.random() * 0.05:lastAvgPrice - lastAvgPrice * Math.random() * 0.05, //last avg price +- 0%<->5%
       quantity: Math.floor(Math.random() * 5) + 1, // quantity between 1 and 5
       userId: "1", //indicates bot
       id: crypto.randomUUID(),

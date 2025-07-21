@@ -174,9 +174,9 @@ export async function deleteAllPrices(prevState: {message:string | null},formDat
   if(password!== "zebrastreifen") return {message: "invalid key"};
   
   try{
-  await prisma.stockPrice.deleteMany();
+    await prisma.stockPrice.deleteMany();
   }catch{
-    {message: "failed"}
+    return {message: "failed"}
   }
 
   return {message: "success"}

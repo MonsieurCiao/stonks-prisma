@@ -8,7 +8,7 @@ export default async function News() {
     },
   });
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center p-4">
       <ul className="my-8 flex flex-col items-center">
         {posts.map((post, i) => (
           <li
@@ -17,9 +17,9 @@ export default async function News() {
               i === 0 ? "border-green px-10" : "border-border w-[90%]"
             } rounded-lg  p-4 mb-4`}
           >
-            <div className="flex justify-between">
-              <h1 className="text-2xl font-bold">{post.title}</h1>
-              <h1 className="text-2xl font-bold">
+            <div className="flex justify-between mb-1">
+              <h1 className="text-2xl font-bold mr-4">{post.title}</h1>
+              <h1 className="text-2xl">
                 {post.time.toLocaleTimeString([], {
                   hour: "2-digit",
                   minute: "2-digit",

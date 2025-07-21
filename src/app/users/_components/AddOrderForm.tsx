@@ -6,14 +6,17 @@ import { stocks } from "../../../../lib/constants";
 export default function AddOrderForm({
   userId,
   lastPrices,
+  sharedStock,
+  setSharedStock,
 }: {
   userId: string;
   lastPrices: Record<string, number>;
+  sharedStock: string;
+  setSharedStock: (stock: string) => void;
 }) {
   const [type, setType] = React.useState<"BUY" | "SELL">("BUY");
-  const [stock, setStock] = React.useState<"GLSCH" | "BNSAI" | "GLDN">("GLSCH");
 
-  const lastPrice = lastPrices[stock];
+  const lastPrice = lastPrices[sharedStock];
   const recommendedPrice =
     type === "BUY"
       ? lastPrice + lastPrice * 0.01
@@ -33,7 +36,7 @@ export default function AddOrderForm({
           name="stockSymbol"
           className="border border-border rounded-lg p-2 mb-4 w-full focus:outline-none focus:ring-2 focus:ring-primary-blue"
           onChange={(e) =>
-            setStock(e.target.value as "GLSCH" | "BNSAI" | "GLDN")
+            setSharedStock(e.target.value as "GLSCH" | "BNSAI" | "GLDN")
           }
         >
           {stocks.map((stock) => (
@@ -54,6 +57,7 @@ export default function AddOrderForm({
           type="number"
           name="quantity"
           placeholder="Quantity"
+          min={0}
           step={0.01}
           className="border border-border rounded-lg p-2 mb-4 w-full focus:outline-none focus:ring-2 focus:ring-primary-blue"
         />
@@ -61,14 +65,14 @@ export default function AddOrderForm({
           Wir empfehlen einen{" "}
           {type === "BUY"
             ? `Kaufpreis von ${Math.round(recommendedPrice * 100) / 100}`
-            : `Verkaufspreis von ${
-                Math.round(recommendedPrice * 100) / 100
-              }`}{" "}
+            : `Verkaufspreis von ${Math.round(recommendedPrice * 100) / 100}`}
+          ₲{" "}
         </label>
         <input
           step={0.01}
           type="number"
           name="price"
+          min={0}
           defaultValue={Math.round(recommendedPrice * 100) / 100}
           className="border border-border rounded-lg p-2 mb-4 w-full focus:outline-none focus:ring-2 focus:ring-primary-blue"
         />

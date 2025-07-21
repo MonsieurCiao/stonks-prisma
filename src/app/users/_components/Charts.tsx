@@ -4,22 +4,27 @@ import React from "react";
 import { stocks } from "../../../../lib/constants";
 import StockChartArea from "@/app/_components/StockChartArea";
 
-export default function Charts() {
-  const [stock, setStock] = React.useState(stocks[0]);
+export default function Charts({
+  sharedStock,
+  setSharedStock,
+}: {
+  sharedStock: string;
+  setSharedStock: (stock: string) => void;
+}) {
   const [isCandle, setIsCandle] = React.useState(true);
   return (
     <div className="w-full">
       {isCandle ? (
-        <CandleChart stockSymbol={stock} />
+        <CandleChart stockSymbol={sharedStock} />
       ) : (
-        <StockChartArea stockSymbol={stock} />
+        <StockChartArea stockSymbol={sharedStock} />
       )}
       <div className="flex gap-10 justify-end">
         <select
           name="type"
           className="border border-border rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-primary-blue"
           onChange={(e) =>
-            setStock(
+            setSharedStock(
               e.target.value as
                 | (typeof stocks)[0]
                 | (typeof stocks)[1]

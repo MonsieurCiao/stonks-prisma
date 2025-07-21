@@ -1,1 +1,1 @@
-export const stocks: string[] = ['GLSCH', 'BNSAI', 'GLDN'];
+export const stocks: string[] = ['GLSCH', 'BNSAI', 'GLDN'] as const;

@@ -48,7 +48,7 @@ export default async function Leaderboard() {
   return (
     <div className="flex flex-col justify-center mt-8 w-full items-center">
       <h1 className="text-4xl mb-8">Leaderboard</h1>
-      <ul className="w-min">
+      <ul className="w-min flex flex-col gap-4">
         {sortedUsers.map((user, i) => (
           <li
             key={user.id}
@@ -56,7 +56,7 @@ export default async function Leaderboard() {
               user.id === userId ? "border-green" : "border-border"
             } rounded-lg w-full px-12 py-2 `}
           >
-            <div className="flex justify-center gap-10 text-2xl ">
+            <div className="flex flex-wrap justify-between text-2xl ">
               <span className="">{i + 1}</span> <span>{user.name}</span>{" "}
               <span className="text-green">
                 {(user.money + user.assetValue).toFixed(2)}

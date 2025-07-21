@@ -9,7 +9,7 @@ export async function addOrder(prevState: {message:string | null}, formData: For
   const price = parseFloat(formData.get("price") as string);
   const type = formData.get("type") as "BUY" | "SELL";
   const userId = formData.get("userId") as string;
-
+  if (price < 0.01 || quantity < 0.01) return {message: "kauf mehr oder zahl mehr"}
   const user = await prisma.user.findUnique({
     where: { id: userId },
   });

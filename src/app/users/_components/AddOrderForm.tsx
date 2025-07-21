@@ -19,6 +19,13 @@ export default function AddOrderForm({
       ? lastPrice + lastPrice * 0.01
       : lastPrice - lastPrice * 0.01;
 
+  const [price, setPrice] = React.useState<number>(
+    Math.round(recommendedPrice) / 100
+  );
+  React.useEffect(() => {
+    setPrice(Math.round(recommendedPrice * 100) / 100);
+  }, [recommendedPrice]);
+
   const [form, formAction] = useActionState(addOrder, {
     message: null,
   });
@@ -68,7 +75,8 @@ export default function AddOrderForm({
           type="number"
           name="price"
           min={0}
-          defaultValue={Math.round(recommendedPrice * 100) / 100}
+          value={price}
+          onChange={(e) => setPrice(parseFloat(e.target.value) || 0.01)}
           className="border border-border rounded-lg p-2 mb-4 w-full focus:outline-none focus:ring-2 focus:ring-primary-blue"
         />
         {form.message && (

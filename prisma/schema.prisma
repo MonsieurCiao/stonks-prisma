@@ -5,9 +5,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("PRISMA_DATABASE_URL") // uses connection pooling
-  // directUrl = env("POSTGRES_URL") // uses a direct connection
+  provider  = "postgresql"
+  url       = env("PRISMA_DATABASE_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL") // uses a direct connection
 }
 
 // IMPORTANT is that every user only has one asset per stock
@@ -19,7 +19,7 @@ model Asset {
   user        User   @relation(fields: [userId], references: [id])
   boughtFor   Float  @default(5) //price at which the asset was bought
 
-  @@unique([stockSymbol, userId])
+  @@unique([stockSymbol, userId], map: "stockSymbol_userId")
 }
 
 model User {

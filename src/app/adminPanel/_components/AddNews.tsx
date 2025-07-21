@@ -5,17 +5,7 @@ import { addPost } from "@/actions/actions";
 import { prisma } from "../../../../lib/prisma";
 
 export default async function AddNews() {
-  const curPrices: Record<string, number> = {};
-  await Promise.all(
-    stocks.map(async (stock) => {
-      const price = await prisma.stockPrice.findFirst({
-        where: { stockSymbol: stock },
-        orderBy: { time: "desc" },
-      });
-      curPrices[stock] = price?.avgPrice ?? 5;
-    })
-  );
-  let curInfluences: number[] = [];
+  const curInfluences: number[] = [];
   await Promise.all(
     stocks.map(async (_, i) => {
       const influence = await prisma.priceInfluence.findFirst({

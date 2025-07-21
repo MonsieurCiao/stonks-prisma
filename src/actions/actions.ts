@@ -185,7 +185,7 @@ export async function deleteUser(prevState: {message:string | null},formData: Fo
     await prisma.user.delete({
       where: {id: userId}
     });
-  }catch(err){
+  }catch(_){
     return {message: "user not found"}
   }
   revalidatePath('/adminPanel');
@@ -203,7 +203,7 @@ export async function modifyMoney(prevState: {message:string | null},formData: F
         money: {increment: money}
       }
     });
-  }catch(err){
+  }catch(_){
     return {message: "something went wrong"}
   }
   revalidatePath('/adminPanel');

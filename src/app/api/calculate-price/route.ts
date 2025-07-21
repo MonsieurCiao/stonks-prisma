@@ -72,7 +72,7 @@ async function updateOrder(orderId: string, userId: string, tradedQuantity: numb
         },
       });
     }catch(err){
-      console.error("Failed upsert", { userId, stockSymbol, err })
+      console.error("Failed upsert", { userId, stockSymbol,tradedQuantity, err })
     }
   }
   //give user money if he sold

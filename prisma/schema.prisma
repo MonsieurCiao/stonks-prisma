@@ -13,7 +13,7 @@ datasource db {
 // IMPORTANT is that every user only has one asset per stock
 model Asset {
   id          String @id @default(cuid())
-  stockSymbol String @unique
+  stockSymbol String
   quantity    Float  @default(0)
   userId      String //foreign key
   user        User   @relation(fields: [userId], references: [id])

@@ -10,6 +10,9 @@ export async function addOrder(prevState: {message:string | null}, formData: For
   const type = formData.get("type") as "BUY" | "SELL";
   const userId = formData.get("userId") as string;
   if (price < 0.01 || quantity < 0.01) return {message: "kauf mehr oder zahl mehr"}
+  if (isNaN(quantity) || isNaN(price)) {
+    return { message: "Ungültiger Preis oder Menge" };
+  }
   const user = await prisma.user.findUnique({
     where: { id: userId },
   });
@@ -32,8 +35,10 @@ export async function addOrder(prevState: {message:string | null}, formData: For
     }
     const updatedAsset = await prisma.asset.update({
       where: {
-        userId: userId,
-        stockSymbol: stockSymbol,
+        stockSymbol_userId:{
+          userId: userId,
+          stockSymbol: stockSymbol,
+        }
       },
       data: {
         quantity: { decrement: quantity },
@@ -42,8 +47,10 @@ export async function addOrder(prevState: {message:string | null}, formData: For
     if(updatedAsset.quantity === 0){
       await prisma.asset.delete({
         where: {
-          userId: userId,
-          stockSymbol: stockSymbol
+          stockSymbol_userId:{
+            userId: userId,
+            stockSymbol: stockSymbol
+          }
         }
       })
     }
@@ -109,8 +116,10 @@ export async function cancelOrder(formData: FormData) {
     //give back asset
     await prisma.asset.upsert({
       where: {
-        userId: userId,
-        stockSymbol: order.stockSymbol,
+        stockSymbol_userId:{
+          userId: userId,
+          stockSymbol: order.stockSymbol,
+        }
       },
       update: {
         quantity: { increment: order.quantity },

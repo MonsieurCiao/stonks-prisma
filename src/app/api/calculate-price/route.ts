@@ -53,8 +53,10 @@ async function updateOrder(orderId: string, userId: string, tradedQuantity: numb
     try{
       await prisma.asset.upsert({
         where: {
+          stockSymbol_userId:{
             stockSymbol: stockSymbol,
             userId: userId
+          },
         },
         update: {
           quantity: { increment: tradedQuantity },

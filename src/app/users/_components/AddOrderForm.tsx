@@ -2,6 +2,7 @@
 import { addOrder } from "@/actions/actions";
 import React, { useActionState } from "react";
 import { stocks, StockSymbol } from "../../../../lib/constants";
+import { useStock } from "./selectedStockContext";
 
 export default function AddOrderForm({
   userId,
@@ -11,7 +12,7 @@ export default function AddOrderForm({
   lastPrices: Record<string, number>;
 }) {
   const [type, setType] = React.useState<"BUY" | "SELL">("BUY");
-  const [stock, setStock] = React.useState<StockSymbol>(stocks[0]);
+  const { stock, setStock } = useStock();
 
   const lastPrice = lastPrices[stock];
   const recommendedPrice =
@@ -30,7 +31,8 @@ export default function AddOrderForm({
     message: null,
   });
   return (
-    <div>
+    <div className="bg-light-bg p-4 rounded-lg">
+      <h2 className="mb-2 text-2xl">Auftrag hinzufügen</h2>
       <form
         className="flex flex-col items-center w-xs max-w-md"
         action={formAction}
@@ -40,10 +42,11 @@ export default function AddOrderForm({
           name="stockSymbol"
           className="border border-border rounded-lg p-2 mb-4 w-full focus:outline-none focus:ring-2 focus:ring-primary-blue"
           onChange={(e) => setStock(e.target.value as StockSymbol)}
+          value={stock}
         >
-          {stocks.map((stock) => (
-            <option key={stock} value={stock}>
-              {stock}
+          {stocks.map((_stock) => (
+            <option key={_stock} value={_stock}>
+              {_stock}
             </option>
           ))}
         </select>
@@ -58,7 +61,7 @@ export default function AddOrderForm({
         <input
           type="number"
           name="quantity"
-          placeholder="Quantity"
+          placeholder="Stock Anzahl"
           min={0}
           step={0.01}
           className="border border-border rounded-lg p-2 mb-4 w-full focus:outline-none focus:ring-2 focus:ring-primary-blue"
@@ -92,8 +95,8 @@ export default function AddOrderForm({
         )}
         <button
           type="submit"
-          className="bg-secondary-blue text-white rounded-lg p-2
-         w-full hover:bg-primary-blue cursor-pointer"
+          className="bg-primary-blue text-white rounded-lg p-2
+         w-full hover:bg-secondary-blue cursor-pointer"
         >
           Add Order
         </button>

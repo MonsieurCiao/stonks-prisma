@@ -51,3 +51,18 @@ export async function login(prevState: {message: string | null},formData: FormDa
   cookieStore.set('userId', user.id);
   redirect(`/users/${user.id}`);
 }
+export async function logout(formData: FormData){
+  const id = formData.get("userId") as string;
+
+  const user = await prisma.user.findUnique({
+    where: { id:id},
+  });
+  if (!user) {
+    throw new Error("user not found");
+  }
+
+  //set cookie
+  const cookieStore = await cookies();
+  cookieStore.delete('userId');
+  redirect(`/`);
+}

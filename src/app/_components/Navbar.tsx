@@ -11,7 +11,7 @@ export default async function Navbar() {
         {userId ? (
           <Link
             href={`/users/${userId}`}
-            className="text-lg group px-4 rounded-lg active:bg-border py-3"
+            className="text-lg group rounded-lg px-1 active:bg-border py-3"
           >
             <div className="flex gap-1 md:gap-2 flex-col items-center md:flex-row ">
               <Image
@@ -27,7 +27,7 @@ export default async function Navbar() {
         ) : (
           <Link
             href={"/"}
-            className="text-lg group px-4 rounded-lg active:bg-border py-3"
+            className="text-lg group rounded-lg px-1 active:bg-border py-3"
           >
             <div className="flex gap-1 md:gap-2 flex-col items-center md:flex-row">
               <Image src={"/Home.svg"} alt="Home" width={18} height={18} />
@@ -38,7 +38,7 @@ export default async function Navbar() {
         )}
         <Link
           href={"/news"}
-          className="text-lg group px-4 rounded-lg active:bg-border py-3"
+          className="text-lg group rounded-lg px-1 active:bg-border py-3"
         >
           <div className="flex gap-1 md:gap-2 flex-col items-center md:flex-row">
             <Image src={"/TV.svg"} alt="News" width={20} height={20} />
@@ -48,11 +48,21 @@ export default async function Navbar() {
         </Link>
         <Link
           href={"/leaderboard"}
-          className="text-lg group px-4 rounded-lg active:bg-border py-3"
+          className="text-lg group rounded-lg px-1 active:bg-border py-3"
         >
           <div className="flex gap-1 md:gap-2 flex-col items-center md:flex-row">
             <Image src={"/Target.svg"} alt="leader" width={18} height={18} />
             <p className="text-sm md:text-lg">Leaderboard</p>
+          </div>
+          <span className="block max-w-0 group-hover:max-w-full transition-all duration-200 h-0.5 bg-white"></span>
+        </Link>
+        <Link
+          href={"/tutorial"}
+          className="text-lg group rounded-lg px-1 active:bg-border py-3"
+        >
+          <div className="flex gap-1 md:gap-2 flex-col items-center md:flex-row">
+            <Image src={"/Marker.svg"} alt="leader" width={18} height={18} />
+            <p className="text-sm md:text-lg">Tutorial</p>
           </div>
           <span className="block max-w-0 group-hover:max-w-full transition-all duration-200 h-0.5 bg-white"></span>
         </Link>

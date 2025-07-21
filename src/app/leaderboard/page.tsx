@@ -59,7 +59,9 @@ export default async function Leaderboard() {
             <div className="flex justify-between text-2xl gap-4">
               <span className="">{i + 1}</span> <span>{user.name}</span>{" "}
               <span className="text-green">
-                {(user.money + user.assetValue).toFixed(2)}
+                <span className="font-martian text-xl">
+                  {(user.money + user.assetValue).toFixed(2)}
+                </span>
               </span>
             </div>
             <div className="text-md w-full flex justify-center text-center">

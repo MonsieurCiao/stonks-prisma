@@ -5,7 +5,8 @@
   --foreground: #171717; */
   --text: #FFFFFF;
   --background: #101924;
-  --primary-blue: #5BA0D4;
+  --light-bg: #152231;
+  --primary-blue: #37709c;
   --secondary-blue: #4F8DBC;
   --border: #4A5057;
   --red: #DD3559;
@@ -16,6 +17,7 @@
 
 @theme inline {
   --color-background: var(--background);
+  --color-light-bg: var(--light-bg);
   --color-text: var(--text);
   --color-primary-blue: var(--primary-blue);
   --color-secondary-blue: var(--secondary-blue);
@@ -25,6 +27,7 @@
   --color-border: var(--border);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-martian: var(--martian-mono);
 }
 
 /* @media (prefers-color-scheme: dark) {

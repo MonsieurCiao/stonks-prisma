@@ -19,7 +19,7 @@ model Asset {
   user        User   @relation(fields: [userId], references: [id])
   boughtFor   Float  @default(5) //price at which the asset was bought
 
-  @@unique([stockSymbol, userId], map: "stockSymbol_userId")
+  @@unique([stockSymbol, userId], name: "stockSymbol_userId")
 }
 
 model User {

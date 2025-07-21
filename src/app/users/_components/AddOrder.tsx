@@ -2,7 +2,6 @@
 import React from "react";
 import { prisma } from "../../../../lib/prisma";
 import AddOrderForm from "./AddOrderForm";
-import { StockSymbol } from "../../../../lib/constants";
 
 export default async function AddOrder({ userId }: { userId: string }) {
   const [lastTradeGLSCH, lastTradeBNSAI, lastTradeGLDN] = await Promise.all([

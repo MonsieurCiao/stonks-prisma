@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "../../../../lib/prisma";
 import { stocks } from "../../../../lib/constants";
-import { revalidatePath } from "next/cache";
 import { updateOrder } from "@/actions/actions";
 
 // THIS IS BASICALLY THE ORDER BOOK

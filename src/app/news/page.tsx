@@ -18,7 +18,7 @@ export default async function News() {
           <div className="flex justify-between mb-1">
             <h1 className="text-xl font-bold mr-4">{posts[0].title}</h1>
             <h1 className="text-xl">
-              {posts[0].time.toLocaleTimeString([], {
+              {new Date(posts[0].time.getTime()).toLocaleTimeString([], {
                 hour: "2-digit",
                 minute: "2-digit",
               })}

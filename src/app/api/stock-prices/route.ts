@@ -24,6 +24,10 @@ export async function GET(req: Request) {
 
   // Format to [{ time, price }]
   const formatted = reversedPrices.map((p) => ({
+  //   time:
+  // new Date(p.time.getTime() + 2 * 60 * 60 * 1000).toLocaleTimeString([], {
+  //   hour: "2-digit",
+  //   minute: "2-digit",}),
     time: p.time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     price: Math.round(p.avgPrice*100)/100,
   }));

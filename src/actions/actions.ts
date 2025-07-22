@@ -213,3 +213,65 @@ export async function modifyMoney(prevState: {message:string | null},formData: F
   revalidatePath('/adminPanel');
   return {message: "success"}
 }
+
+export async function updateOrder(orderId: string, userId: string, tradedQuantity: number, tradePrice: number, type: "BUY" | "SELL", deleteOrder: boolean, stockSymbol: string) {
+  if (deleteOrder) {
+    await prisma.order.delete({
+      where: {
+        id: orderId,
+        userId: userId,
+      },
+    });
+  }
+  else{
+    await prisma.order.update({
+      where: {
+        id: orderId,
+        userId: userId,
+      },
+      data: {
+        quantity: { decrement: tradedQuantity },
+      },
+    });
+  }
+  // NOTICE that the updating of money and assets should be done in the addOrder function
+  // this is where the money and assets are transferred
+
+  //give user asset if he bought
+  if(type === "BUY" && userId !== "1") {
+    try{
+      await prisma.asset.upsert({
+        where: {
+          stockSymbol_userId:{
+            stockSymbol: stockSymbol,
+            userId: userId
+          },
+        },
+        update: {
+          quantity: { increment: tradedQuantity },
+          boughtFor: { increment: tradePrice * tradedQuantity }
+        },
+        create: {
+          stockSymbol: stockSymbol,
+          quantity: tradedQuantity,
+          userId: userId,
+          boughtFor: tradePrice
+        },
+      });
+    }catch(err){
+      console.error("Failed upsert", { userId, stockSymbol,tradedQuantity, err })
+    }
+  }
+  //give user money if he sold
+  else if(type === "SELL") {
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        money: { increment: tradePrice* tradedQuantity },
+      },
+    });
+  }
+  revalidatePath(`/users/${userId}`)
+}
